@@ -67,7 +67,7 @@ OcrLiteOnnx/opencv
 4.  VS2017/2019安装时，至少选中"使用C++的桌面开发"
 5.  开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到OcrLiteOnnx根目录
 6.  运行```build-win.cmd```
-7.  编译完成后运行```run-test-win.cmd```进行测试，或直接运行OcrLiteOnnx.exe，识别test目录下的7张图片
+7.  编译完成后运行```run-test-win.cmd```进行测试
 8.  如果提示缺少"VCRUNTIME140_1.dll"，下载安装适用于 Visual Studio 2015、2017 和 2019 的 Microsoft Visual C++ 可再发行软件包，
 [下载地址](https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads)
 
@@ -81,14 +81,14 @@ brew ln opencv3 --force
 ```
 4.  libomp: ```brew install libomp```
 5.  编译：```./build.sh```
-6.  测试：```./run-test.sh```，或直接运行./OcrLiteOnnx，识别test目录下的7张图片
+6.  测试：```./run-test.sh```
 
 ##### Linux编译说明
 1.  Deepin 20 或其它发行版
 2.  安装build-essential:略……
 3.  下载opencv：各发行版不大一样，略……
 4.  编译：```./build.sh```
-5.  测试：```./run-test.sh```，或直接运行./OcrLiteOnnx，识别test目录下的7张图片
+5.  测试：```./run-test.sh```
 
 #### 测试结果说明
 1.  *-part-x.jpg为分割后的图片
