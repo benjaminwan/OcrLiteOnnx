@@ -79,7 +79,13 @@ int main(int argc, char **argv) {
         }
 
         OcrLite ocrLite(numThread);
-        ocrLite.initLogger(imgPath.c_str(), imgName.c_str(), true, true, true, true, true);
+        ocrLite.initLogger(imgPath.c_str(), imgName.c_str(),
+                           true,//isOutputConsole
+                           false,//isOutputPartImg
+                           false,//isOutputAngleImg
+                           false,//isOutputDebugImg
+                           true,//isOutputResultTxt
+                           true);//isOutputResultImg
         bool ret = ocrLite.initModels(modelsDir.c_str());
         if (!ret) return -1;
 

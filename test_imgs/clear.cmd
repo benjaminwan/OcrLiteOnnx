@@ -2,6 +2,9 @@
 echo Delete part img
 DEL /Q *-part-*.jpg
 
+echo Delete angle img
+DEL /Q *-angle-*.jpg
+
 echo Delete debug img
 DEL /Q *-debug-*.jpg
 

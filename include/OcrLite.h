@@ -12,7 +12,7 @@ public:
     ~OcrLite();
 
     void initLogger(const char *path, const char *imgName, bool isConsole,
-                    bool isPartImg, bool isDebugImg, bool isResultTxt, bool isResultImg);
+                    bool isPartImg, bool isAngleImg, bool isDebugImg, bool isResultTxt, bool isResultImg);
 
     bool initModels(const char *path);
 
@@ -31,6 +31,7 @@ public:
 private:
     bool isOutputConsole = true;
     bool isOutputPartImg = true;
+    bool isOutputAngleImg = true;
     bool isOutputDebugImg = true;
     bool isOutputResultTxt = true;
     bool isOutputResultImg = true;
