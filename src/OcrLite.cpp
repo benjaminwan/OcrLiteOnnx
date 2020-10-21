@@ -519,7 +519,11 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
 
     //cropped to original size
     cv::Mat textBoxImg;
-    textBoxPaddingImg(originRect).copyTo(textBoxImg);
+    if (originRect.x > 0 && originRect.y > 0) {
+        textBoxPaddingImg(originRect).copyTo(textBoxImg);
+    } else {
+        textBoxImg = textBoxPaddingImg;
+    }
 
     //Save result.jpg
     if (isOutputResultImg) {
