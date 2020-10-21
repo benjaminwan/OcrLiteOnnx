@@ -349,8 +349,7 @@ cv::Mat makePadding(cv::Mat &src, const int padding) {
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           const int padding, const float imgScale,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float angleScaleWidth, float angleScaleHeight,
-                          float textScaleWidth, float textScaleHeight) {
+                          float scaleWidth, float scaleHeight) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
     cv::Mat originSrc = cv::imread(imgFile);
@@ -360,15 +359,14 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     ScaleParam scale = getScaleParam(src, imgScale);
 
     return detect(path, imgName, src, originRect, scale,
-                  boxScoreThresh, boxThresh, minArea, angleScaleWidth,
-                  angleScaleHeight, textScaleWidth, textScaleHeight);
+                  boxScoreThresh, boxThresh, minArea, scaleWidth,
+                  scaleHeight);
 }
 
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           const int padding, const int imgResize,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float angleScaleWidth, float angleScaleHeight,
-                          float textScaleWidth, float textScaleHeight) {
+                          float scaleWidth, float scaleHeight) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
     cv::Mat originSrc = cv::imread(imgFile);
@@ -385,14 +383,14 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     ScaleParam scale = getScaleParam(src, resize);
 
     OcrResult result = detect(path, imgName, src, originRect, scale,
-                              boxScoreThresh, boxThresh, minArea, angleScaleWidth,
-                              angleScaleHeight, textScaleWidth, textScaleHeight);
+                              boxScoreThresh, boxThresh, minArea, scaleWidth,
+                              scaleHeight);
 
     /*double startTest = getCurrentTime();
     for (int i = 0; i < 500; ++i) {
         detect(path, imgName, src, originRect, scale,
-               boxScoreThresh, boxThresh, minArea, angleScaleWidth,
-               angleScaleHeight, textScaleWidth, textScaleHeight);
+               boxScoreThresh, boxThresh, minArea, scaleWidth,
+               scaleHeight);
     }
     double endTest = getCurrentTime();
     printf("time=%f\n", (endTest - startTest) / 500);*/
@@ -419,8 +417,7 @@ cv::Mat adjustAngleImg(cv::Mat &src, int dstWidth, int dstHeight) {
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float angleScaleWidth, float angleScaleHeight,
-                          float textScaleWidth, float textScaleHeight) {
+                          float scaleWidth, float scaleHeight) {
 
     cv::Mat textBoxPaddingImg = src.clone();
     int thickness = getThickness(src);
@@ -444,27 +441,18 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     for (int i = 0; i < textBoxes.size(); ++i) {
         Logger("-----TextBox[%d] score(%f)-----\n", i, textBoxes[i].score);
         double startTextBox = getCurrentTime();
-        cv::Mat angleImg;
-        cv::RotatedRect rectAngle = getPartRect(textBoxes[i].box, angleScaleWidth,
-                                                angleScaleHeight);
+        cv::Mat partImg;
+        cv::RotatedRect partRect = getPartRect(textBoxes[i].box, scaleWidth,
+                                                scaleHeight);
+        Logger("partRect(center.x=%f, center.y=%f, width=%f, height=%f, angle=%f)\n",
+               partRect.center.x, partRect.center.y,
+               partRect.size.width, partRect.size.height,
+               partRect.angle);
 
-        RRLib::getRotRectImg(rectAngle, src, angleImg);
-        Logger("rectAngle(center.x=%f, center.y=%f, width=%f, height=%f, angle=%f)\n",
-               rectAngle.center.x, rectAngle.center.y,
-               rectAngle.size.width, rectAngle.size.height,
-               rectAngle.angle);
-
-        cv::Mat textImg;
-        cv::RotatedRect rectText = getPartRect(textBoxes[i].box, textScaleWidth,
-                                               textScaleHeight);
-        RRLib::getRotRectImg(rectText, src, textImg);
-        Logger("rectText(center.x=%f, center.y=%f, width=%f, height=%f, angle=%f)\n",
-               rectText.center.x, rectText.center.y,
-               rectText.size.width, rectText.size.height,
-               rectText.angle);
+        RRLib::getRotRectImg(partRect, src, partImg);
 
         //drawTextBox
-        drawTextBox(textBoxPaddingImg, rectText, thickness);
+        drawTextBox(textBoxPaddingImg, partRect, thickness);
         Logger("TextBoxPos([x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d])\n",
                textBoxes[i].box[0].x, textBoxes[i].box[0].y,
                textBoxes[i].box[1].x, textBoxes[i].box[1].y,
@@ -474,19 +462,18 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         //OutPut PartImg
         if (isOutputPartImg) {
             std::string partImgFile = getDebugImgFilePath(path, imgName, i, "-part-");
-            saveImg(textImg, partImgFile.c_str());
+            saveImg(partImg, partImgFile.c_str());
         }
 
         //Rotate Img
-        if (angleImg.rows > 1.5 * angleImg.cols) {
-            angleImg = matRotateClockWise90(angleImg);
-            textImg = matRotateClockWise90(textImg);
+        if (partImg.rows > 1.5 * partImg.cols) {
+            partImg = matRotateClockWise90(partImg);
         }
 
         //getAngle
         double startAngle = getCurrentTime();
-        auto angleAdjImg = adjustAngleImg(angleImg, angleDstWidth, angleDstHeight);
-        Angle angle = getAngle(angleAdjImg);
+        auto angleImg = adjustAngleImg(partImg, angleDstWidth, angleDstHeight);
+        Angle angle = getAngle(angleImg);
         double endAngle = getCurrentTime();
         angle.time = endAngle - startAngle;
 
@@ -498,23 +485,23 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         //OutPut AngleImg
         if (isOutputAngleImg) {
             std::string angleImgFile = getDebugImgFilePath(path, imgName, i, "-angle-");
-            saveImg(angleAdjImg, angleImgFile.c_str());
+            saveImg(angleImg, angleImgFile.c_str());
         }
 
         //Rotate Img
         if (angle.index == 0 || angle.index == 2) {
-            textImg = matRotateClockWise180(textImg);
+            partImg = matRotateClockWise180(partImg);
         }
 
         //OutPut DebugImg
         if (isOutputDebugImg) {
             std::string debugImgFile = getDebugImgFilePath(path, imgName, i, "-debug-");
-            saveImg(textImg, debugImgFile.c_str());
+            saveImg(partImg, debugImgFile.c_str());
         }
 
         //getTextLine
         double startTextLine = getCurrentTime();
-        TextLine textLine = getTextLine(textImg);
+        TextLine textLine = getTextLine(partImg);
         double endTextLine = getCurrentTime();
         textLine.time = endTextLine - startTextLine;
 
