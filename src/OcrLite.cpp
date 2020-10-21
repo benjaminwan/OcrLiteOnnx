@@ -524,30 +524,24 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         strRes.append(textLine.line);
         strRes.append("\n");
     }
-
     double endTime = getCurrentTime();
     double fullTime = endTime - startTime;
     Logger("=====End detect=====\n");
     Logger("FullDetectTime(%fms)\n", fullTime);
 
-//cropped to original size
+    //cropped to original size
     cv::Mat textBoxImg;
     if (originRect.x > 0 && originRect.y > 0) {
-        textBoxPaddingImg(originRect)
-                .
-                        copyTo(textBoxImg);
+        textBoxPaddingImg(originRect).copyTo(textBoxImg);
     } else {
         textBoxImg = textBoxPaddingImg;
     }
 
-//Save result.jpg
+    //Save result.jpg
     if (isOutputResultImg) {
         std::string resultImgFile = getResultImgFilePath(path, imgName);
-        cv::imwrite(resultImgFile, textBoxImg
-        );
+        cv::imwrite(resultImgFile, textBoxImg);
     }
 
-    return
-            OcrResult(textBoxes, textBoxesTime, angles, textLines, textBoxImg, strRes, fullTime
-            );
+    return OcrResult(textBoxes, textBoxesTime, angles, textLines, textBoxImg, strRes, fullTime);
 }
