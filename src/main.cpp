@@ -17,8 +17,8 @@ int main(int argc, char **argv) {
         float boxScoreThresh = 0.6f;
         float boxThresh = 0.3f;
         float minArea = 3.f;
-        float angleScaleWidth = 1.3f;
-        float angleScaleHeight = 1.3f;
+        float angleScaleWidth = 1.0f;
+        float angleScaleHeight = 1.0f;
         float textScaleWidth = 1.6f;
         float textScaleHeight = 1.6f;
 
