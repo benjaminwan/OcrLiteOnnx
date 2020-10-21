@@ -168,7 +168,8 @@ bool OcrLite::initModels(const char *path) {
 }
 
 void OcrLite::Logger(const char *format, ...) {
-    char buffer[4096] = {0};
+    if (!(isOutputConsole || isOutputResultTxt)) return;
+    char *buffer = (char *) malloc(4096);
     va_list args;
     va_start(args, format);
     vsprintf(buffer, format, args);
