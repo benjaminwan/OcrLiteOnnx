@@ -388,13 +388,13 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
                               angleScaleHeight, textScaleWidth, textScaleHeight);
 
     /*double startTest = getCurrentTime();
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 500; ++i) {
         detect(path, imgName, src, originRect, scale,
                boxScoreThresh, boxThresh, minArea, angleScaleWidth,
                angleScaleHeight, textScaleWidth, textScaleHeight);
     }
     double endTest = getCurrentTime();
-    printf("time=%f\n", (endTest - startTest) / 1000);*/
+    printf("time=%f\n", (endTest - startTest) / 500);*/
 
     return result;
 }
