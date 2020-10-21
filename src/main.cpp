@@ -6,7 +6,7 @@ int main(int argc, char **argv) {
                 "Usage: %s image/path models/dir numThread(option) padding(option) imgResize(option) boxScoreThresh(option) boxThresh(option) minArea(option) angleScaleWidth(option) angleScaleHeight(option) textScaleWidth(option) textScaleHeight(option)\n",
                 argv[0]);
         fprintf(stderr, "Example: %s ../test/1.jpg ../models\n", argv[0]);
-        fprintf(stderr, "Example: %s ../test/1.jpg ../models 0 0 0 0.6 0.3 3 1.3 1.3 1.6 1.6\n", argv[0]);
+        fprintf(stderr, "Example: %s ../test/1.jpg ../models 0 0 0 0.6 0.3 3 1.0 1.0 1.6 1.6\n", argv[0]);
     } else {
         std::string argImgPath, imgPath, imgName, modelsDir;
         argImgPath = "../test/1.jpg";
