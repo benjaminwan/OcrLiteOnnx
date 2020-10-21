@@ -250,10 +250,23 @@ Angle scoreToAngle(const float *srcData, int w) {
     return Angle(angleIndex, maxValue);
 }
 
-Angle OcrLite::getAngle(cv::Mat &src) {
+cv::Mat adjustAngleImg(cv::Mat &src, int dstWidth, int dstHeight) {
     cv::Mat srcResize;
-    cv::resize(src, srcResize, cv::Size(angleDstWidth, angleDstHeight));
+    float scale = (float) dstHeight / (float) src.rows;
+    int angleWidth = int((float) src.cols * scale);
+    if (angleWidth <= dstWidth) {
+        angleWidth = dstWidth;
+    }
+    cv::resize(src, srcResize, cv::Size(angleWidth, dstHeight));
+    if (angleWidth > dstWidth) {
+        cv::Rect angleDstRect((angleWidth - dstWidth) / 2, 0, dstWidth, dstHeight);
+        srcResize(angleDstRect).copyTo(srcResize);
+    }
+    return srcResize;
+}
 
+Angle OcrLite::getAngle(cv::Mat &src) {
+    auto srcResize = adjustAngleImg(src, angleDstWidth, angleDstHeight);
     std::vector<float> inputTensorValues = substractMeanNormalize(srcResize, meanValsAngle, normValsAngle);
 
     std::array<int64_t, 4> inputShape{1, srcResize.channels(), srcResize.rows, srcResize.cols};
@@ -432,6 +445,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         cv::Mat angleImg;
         cv::RotatedRect rectAngle = getPartRect(textBoxes[i].box, angleScaleWidth,
                                                 angleScaleHeight);
+
         RRLib::getRotRectImg(rectAngle, src, angleImg);
         Logger("rectAngle(center.x=%f, center.y=%f, width=%f, height=%f, angle=%f)\n",
                rectAngle.center.x, rectAngle.center.y,
