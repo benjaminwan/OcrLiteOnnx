@@ -3,10 +3,10 @@
 int main(int argc, char **argv) {
     if (argc <= 1) {
         fprintf(stderr,
-                "Usage: %s image/path models/dir numThread(option) padding(option) imgResize(option) boxScoreThresh(option) boxThresh(option) minArea(option) scaleWidth(option) scaleHeight(option)\n",
+                "Usage: %s image/path models/dir numThread(option) padding(option) imgResize(option) boxScoreThresh(option) boxThresh(option) minArea(option) unClipRatio(option)\n",
                 argv[0]);
         fprintf(stderr, "Example: %s ../test/1.jpg ../models\n", argv[0]);
-        fprintf(stderr, "Example: %s ../test/1.jpg ../models 4 50 0 0.6 0.3 3 1.8 1.8\n", argv[0]);
+        fprintf(stderr, "Example: %s ../test/1.jpg ../models 4 50 0 0.6 0.3 3 2.0\n", argv[0]);
     } else {
         std::string argImgPath, imgPath, imgName, modelsDir;
         argImgPath = "../test/1.jpg";
@@ -17,8 +17,7 @@ int main(int argc, char **argv) {
         float boxScoreThresh = 0.6f;
         float boxThresh = 0.3f;
         float minArea = 3.f;
-        float scaleWidth = 1.8f;
-        float scaleHeight = 1.8f;
+        float unClipRatio = 2.0f;
 
         for (int i = 1; i < argc; ++i) {
             printf("argv[%d]=%s, ", i, argv[i]);
@@ -58,12 +57,8 @@ int main(int argc, char **argv) {
                     printf("minArea=%f\n", minArea);
                     break;
                 case 9:
-                    scaleWidth = strtof(argv[i], NULL);
-                    printf("scaleWidth=%f\n", scaleWidth);
-                    break;
-                case 10:
-                    scaleHeight = strtof(argv[i], NULL);
-                    printf("scaleHeight=%f\n", scaleHeight);
+                    unClipRatio = strtof(argv[i], NULL);
+                    printf("scaleWidth=%f\n", unClipRatio);
                     break;
             }
         }
@@ -73,7 +68,7 @@ int main(int argc, char **argv) {
                            true,//isOutputConsole
                            false,//isOutputPartImg
                            false,//isOutputAngleImg
-                           true,//isOutputDebugImg
+                           false,//isOutputDebugImg
                            true,//isOutputResultTxt
                            true);//isOutputResultImg
         bool ret = ocrLite.initModels(modelsDir.c_str());
@@ -82,9 +77,8 @@ int main(int argc, char **argv) {
         OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
                                           padding, imgResize,
                                           boxScoreThresh, boxThresh, minArea,
-                                          scaleWidth,
-                                          scaleHeight);
-        printf("%s\n", result.strRes.c_str());
+                                          unClipRatio);
+        ocrLite.Logger("%s\n", result.strRes.c_str());
     }
 
     return 0;
