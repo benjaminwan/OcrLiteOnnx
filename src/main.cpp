@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     float boxThresh = 0.3f;
     float minArea = 3.f;
     float unClipRatio = 2.0f;
-    bool noAngle = false;
+    bool doAngle = true;
 
     int opt;
     int optionIndex = 0;
@@ -77,8 +77,8 @@ int main(int argc, char **argv) {
                 printf("unClipRatio=%f\n", unClipRatio);
                 break;
             case 'n':
-                noAngle = true;
-                printf("noAngle=%d\n", noAngle);
+                doAngle = false;
+                printf("noAngle=%d\n", !doAngle);
                 break;
             case '?':
                 printHelp(stdout, argv[0]);
@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
     OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
                                       padding, imgResize,
                                       boxScoreThresh, boxThresh, minArea,
-                                      unClipRatio, noAngle);
+                                      unClipRatio, doAngle);
     ocrLite.Logger("%s\n", result.strRes.c_str());
 
     return 0;

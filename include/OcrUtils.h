@@ -41,6 +41,10 @@ void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv
 
 std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, const float *normVals);
 
+std::vector<int> getAngleIndexes(std::vector<TextBlock> &textBlocks);
+
+int getMostProbabilityAngleIndex(std::vector<int> &input, double mean, double stdev);
+
 void saveImg(cv::Mat &img, const char *imgPath);
 
 std::string getSrcImgFilePath(const char *path, const char *imgName);

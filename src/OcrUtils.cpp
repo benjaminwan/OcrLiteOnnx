@@ -1,5 +1,6 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
+#include <numeric>
 #include "OcrUtils.h"
 #include "clipper.hpp"
 
@@ -322,6 +323,30 @@ std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, c
         }
     }
     return inputTensorValues;
+}
+
+std::vector<int> getAngleIndexes(std::vector<TextBlock> &textBlocks) {
+    std::vector<int> angleIndexes;
+    angleIndexes.reserve(textBlocks.size());
+    for (int i = 0; i < textBlocks.size(); ++i) {
+        angleIndexes.push_back(textBlocks[i].angleIndex);
+    }
+    return angleIndexes;
+}
+
+int getMostProbabilityAngleIndex(std::vector<int> &input, double mean, double stdev) {
+    if (stdev == 0) return mean;
+    double start = mean - stdev;
+    double end = mean + stdev;
+    printf("start=%f,end=%f\n", start, end);
+    for (auto it = input.begin(); it != input.end();) {
+        if (*it < start || *it > end) {
+            it = input.erase(it);
+        }
+        ++it;
+    }
+    auto sum = std::accumulate(input.begin(), input.end(), 0.0);
+    return (int) (sum / input.size());
 }
 
 void saveImg(cv::Mat &img, const char *imgPath) {

@@ -3,7 +3,7 @@
 #include <fstream>
 #include "OcrLite.h"
 #include "OcrUtils.h"
-#include <stdarg.h>
+#include <numeric>
 
 OcrLite::OcrLite(int numOfThread) {
     numThread = numOfThread;
@@ -359,7 +359,7 @@ cv::Mat makePadding(cv::Mat &src, const int padding) {
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           const int padding, const float imgScale,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio, bool noAngle) {
+                          float unClipRatio, bool doAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
     cv::Mat originSrc = cv::imread(imgFile);
@@ -369,13 +369,13 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     ScaleParam scale = getScaleParam(src, imgScale);
 
     return detect(path, imgName, src, originRect, scale,
-                  boxScoreThresh, boxThresh, minArea, unClipRatio, noAngle);
+                  boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle);
 }
 
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           const int padding, const int imgResize,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio, bool noAngle) {
+                          float unClipRatio, bool doAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
     cv::Mat originSrc = cv::imread(imgFile);
@@ -392,7 +392,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     ScaleParam scale = getScaleParam(src, resize);
 
     OcrResult result = detect(path, imgName, src, originRect, scale,
-                              boxScoreThresh, boxThresh, minArea, unClipRatio, noAngle);
+                              boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle);
 
     /*double startTest = getCurrentTime();
     for (int i = 0; i < 500; ++i) {
@@ -405,10 +405,27 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     return result;
 }
 
+template<typename T>
+double getMean(std::vector<T> &input) {
+    auto sum = std::accumulate(input.begin(), input.end(), 0.0);
+    return sum / input.size();
+}
+
+template<typename T>
+double getStdev(std::vector<T> &input, double mean) {
+    if (input.size() <= 1) return 0;
+    double accum = 0.0;
+    std::for_each(input.begin(), input.end(), [&](const double d) {
+        accum += (d - mean) * (d - mean);
+    });
+    double stdev = sqrt(accum / (input.size() - 1));
+    return stdev;
+}
+
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio, bool noAngle) {
+                          float unClipRatio, bool doAngle) {
 
     cv::Mat textBoxPaddingImg = src.clone();
     int thickness = getThickness(src);
@@ -428,7 +445,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
 
 
     std::vector<TextBlock> textBlocks;
-    std::string strRes;
+
     for (int i = 0; i < textBoxes.size(); ++i) {
         Logger("-----TextBox[%d] score(%f)-----\n", i, textBoxes[i].score);
         double startTextBox = getCurrentTime();
@@ -460,7 +477,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         }
 
         Angle angle(-1, 0.f);
-        if (!noAngle) {
+        if (doAngle) {
             //getAngle
             double startAngle = getCurrentTime();
             auto angleImg = adjustAngleImg(partImg, angleDstWidth, angleDstHeight);
@@ -469,7 +486,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
             angle.time = endAngle - startAngle;
 
             //Log Angle
-            Logger("angle(index=%d, score=%f time(%fms)) \n", angle.index, angle.score, angle.time);
+            Logger("angle(index=%d, score=%f time=%fms) \n", angle.index, angle.score, angle.time);
 
             //OutPut AngleImg
             if (isOutputAngleImg) {
@@ -510,9 +527,6 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         double timeTextBox = endTextBox - startTextBox;
         Logger("TextBox[%i]Time(%fms)\n", i, timeTextBox);
 
-        strRes.append(textLine.text);
-        strRes.append("\n");
-
         TextBlock textBlock(textBoxes[i].boxPoint, textBoxes[i].score, angle.index, angle.score,
                             angle.time, textLine.text, textLine.charScores, textLine.time,
                             timeTextBox);
@@ -535,6 +549,21 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     if (isOutputResultImg) {
         std::string resultImgFile = getResultImgFilePath(path, imgName);
         cv::imwrite(resultImgFile, textBoxImg);
+    }
+
+    //Adjust text order
+    if (doAngle) {
+        auto angleIndexes = getAngleIndexes(textBlocks);
+        auto mean = getMean(angleIndexes);
+        auto stdev = getStdev(angleIndexes, mean);
+        auto mostAngleIndex = getMostProbabilityAngleIndex(angleIndexes, mean, stdev);
+        if (mostAngleIndex == 0) reverse(textBlocks.begin(), textBlocks.end());
+    }
+
+    std::string strRes;
+    for (int i = 0; i < textBlocks.size(); ++i) {
+        strRes.append(textBlocks[i].text);
+        strRes.append("\n");
     }
 
     return OcrResult(textBlocks, dbNetTime, textBoxImg, fullTime, strRes);
