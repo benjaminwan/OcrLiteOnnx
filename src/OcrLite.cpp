@@ -552,13 +552,14 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     }
 
     //Adjust text order
-    if (doAngle) {
+    /*if (doAngle) {
         auto angleIndexes = getAngleIndexes(textBlocks);
         auto mean = getMean(angleIndexes);
         auto stdev = getStdev(angleIndexes, mean);
         auto mostAngleIndex = getMostProbabilityAngleIndex(angleIndexes, mean, stdev);
+        printf("mean=%f,stdev=%f,mostAngle=%d\n", mean, stdev, mostAngleIndex);
         if (mostAngleIndex == 0) reverse(textBlocks.begin(), textBlocks.end());
-    }
+    }*/
 
     std::string strRes;
     for (int i = 0; i < textBlocks.size(); ++i) {
