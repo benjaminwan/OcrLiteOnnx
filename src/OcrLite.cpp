@@ -3,6 +3,7 @@
 #include <fstream>
 #include "OcrLite.h"
 #include "OcrUtils.h"
+#include <stdarg.h>
 
 OcrLite::OcrLite(int numOfThread) {
     numThread = numOfThread;
