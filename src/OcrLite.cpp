@@ -443,7 +443,6 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     double dbNetTime = endDbNetTime - startTime;
     Logger("dbNetTime(%fms)\n", dbNetTime);
 
-
     std::vector<TextBlock> textBlocks;
 
     for (int i = 0; i < textBoxes.size(); ++i) {
@@ -452,12 +451,13 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         cv::Mat partImg;
 
         //use RRLib
-        /*cv::RotatedRect partRect = getPartRect(textBoxes[i].box, scaleWidth,
-                                                scaleHeight);
+        /*cv::RotatedRect partRect = getPartRect(textBoxes[i].boxPoint, scaleWidth,
+                                               scaleHeight);
         Logger("partRect(center.x=%f, center.y=%f, width=%f, height=%f, angle=%f)\n",
-               partRect.center.x, partRect.center.y,
-               partRect.size.width, partRect.size.height,
-               partRect.angle);
+             partRect.center.x, partRect.center.y,
+             partRect.size.width, partRect.size.height,
+             partRect.angle);
+
         RRLib::getRotRectImg(partRect, src, partImg);
         drawTextBox(textBoxPaddingImg, partRect, thickness);*/
         //use clipper
