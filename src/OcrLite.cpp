@@ -359,7 +359,7 @@ cv::Mat makePadding(cv::Mat &src, const int padding) {
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           const int padding, const float imgScale,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio) {
+                          float unClipRatio, bool noAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
     cv::Mat originSrc = cv::imread(imgFile);
@@ -369,13 +369,13 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     ScaleParam scale = getScaleParam(src, imgScale);
 
     return detect(path, imgName, src, originRect, scale,
-                  boxScoreThresh, boxThresh, minArea, unClipRatio);
+                  boxScoreThresh, boxThresh, minArea, unClipRatio, noAngle);
 }
 
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           const int padding, const int imgResize,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio) {
+                          float unClipRatio, bool noAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
     cv::Mat originSrc = cv::imread(imgFile);
@@ -392,13 +392,12 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     ScaleParam scale = getScaleParam(src, resize);
 
     OcrResult result = detect(path, imgName, src, originRect, scale,
-                              boxScoreThresh, boxThresh, minArea, unClipRatio);
+                              boxScoreThresh, boxThresh, minArea, unClipRatio, noAngle);
 
     /*double startTest = getCurrentTime();
     for (int i = 0; i < 500; ++i) {
         detect(path, imgName, src, originRect, scale,
-               boxScoreThresh, boxThresh, minArea, scaleWidth,
-               scaleHeight);
+                              boxScoreThresh, boxThresh, minArea, unClipRatio, noAngle);
     }
     double endTest = getCurrentTime();
     printf("time=%f\n", (endTest - startTest) / 500);*/
@@ -409,7 +408,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio) {
+                          float unClipRatio, bool noAngle) {
 
     cv::Mat textBoxPaddingImg = src.clone();
     int thickness = getThickness(src);
@@ -449,10 +448,10 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         drawTextBox(textBoxPaddingImg, textBoxes[i].boxPoint, thickness);
 
         Logger("TextBoxPos([x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d])\n",
-             textBoxes[i].boxPoint[0].x, textBoxes[i].boxPoint[0].y,
-             textBoxes[i].boxPoint[1].x, textBoxes[i].boxPoint[1].y,
-             textBoxes[i].boxPoint[2].x, textBoxes[i].boxPoint[2].y,
-             textBoxes[i].boxPoint[3].x, textBoxes[i].boxPoint[3].y);
+               textBoxes[i].boxPoint[0].x, textBoxes[i].boxPoint[0].y,
+               textBoxes[i].boxPoint[1].x, textBoxes[i].boxPoint[1].y,
+               textBoxes[i].boxPoint[2].x, textBoxes[i].boxPoint[2].y,
+               textBoxes[i].boxPoint[3].x, textBoxes[i].boxPoint[3].y);
 
         //OutPut PartImg
         if (isOutputPartImg) {
@@ -460,31 +459,28 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
             saveImg(partImg, partImgFile.c_str());
         }
 
-        //Rotate Img
-        if (partImg.rows > 1.5 * partImg.cols) {
-            partImg = matRotateClockWise90(partImg);
-        }
+        Angle angle(-1, 0.f);
+        if (!noAngle) {
+            //getAngle
+            double startAngle = getCurrentTime();
+            auto angleImg = adjustAngleImg(partImg, angleDstWidth, angleDstHeight);
+            angle = getAngle(angleImg);
+            double endAngle = getCurrentTime();
+            angle.time = endAngle - startAngle;
 
-        //getAngle
-        double startAngle = getCurrentTime();
-        auto angleImg = adjustAngleImg(partImg, angleDstWidth, angleDstHeight);
-        Angle angle = getAngle(angleImg);
-        double endAngle = getCurrentTime();
-        angle.time = endAngle - startAngle;
+            //Log Angle
+            Logger("angle(index=%d, score=%f time(%fms)) \n", angle.index, angle.score, angle.time);
 
-        //Log Angle
-        Logger("angle(index=%d, score=%f)\n", angle.index, angle.score);
-        Logger("angleTime(%fms)\n", angle.time);
+            //OutPut AngleImg
+            if (isOutputAngleImg) {
+                std::string angleImgFile = getDebugImgFilePath(path, imgName, i, "-angle-");
+                saveImg(angleImg, angleImgFile.c_str());
+            }
 
-        //OutPut AngleImg
-        if (isOutputAngleImg) {
-            std::string angleImgFile = getDebugImgFilePath(path, imgName, i, "-angle-");
-            saveImg(angleImg, angleImgFile.c_str());
-        }
-
-        //Rotate Img
-        if (angle.index == 0) {
-            partImg = matRotateClockWise180(partImg);
+            //Rotate Img
+            if (angle.index == 0) {
+                partImg = matRotateClockWise180(partImg);
+            }
         }
 
         //OutPut DebugImg

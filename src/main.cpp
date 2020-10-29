@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
     OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
                                       padding, imgResize,
                                       boxScoreThresh, boxThresh, minArea,
-                                      unClipRatio);
+                                      unClipRatio, noAngle);
     ocrLite.Logger("%s\n", result.strRes.c_str());
 
     return 0;

@@ -21,12 +21,12 @@ public:
     OcrResult detect(const char *path, const char *imgName,
                      int padding, float imgScale,
                      float boxScoreThresh, float boxThresh, float minArea,
-                     float unClipRatio);
+                     float unClipRatio, bool noAngle);
 
     OcrResult detect(const char *path, const char *imgName,
                      int padding, int imgResize,
                      float boxScoreThresh, float boxThresh, float minArea,
-                     float unClipRatio);
+                     float unClipRatio, bool noAngle);
 
 private:
     bool isOutputConsole = true;
@@ -73,7 +73,7 @@ private:
     OcrResult detect(const char *path, const char *imgName,
                      cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                      float boxScoreThresh = 0.6f, float boxThresh = 0.3f, float minArea = 3.f,
-                     float unClipRatio = 2.0f);
+                     float unClipRatio = 2.0f, bool noAngle = false);
 };
 
 #endif //__OCR_LITE_H__
