@@ -1,9 +1,13 @@
 #include <iosfwd>
 #include <opencv/cv.hpp>
+#include <numeric>
 #include <fstream>
 #include "OcrLite.h"
 #include "OcrUtils.h"
-#include <numeric>
+
+#ifdef _WIN32
+#include <stdarg.h> //windows
+#endif
 
 OcrLite::OcrLite(int numOfThread) {
     numThread = numOfThread;
