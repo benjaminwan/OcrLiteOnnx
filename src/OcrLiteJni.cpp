@@ -41,6 +41,16 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_initLogger(JNIEnv *env, jobject thiz, 
                         isResultImg);//isOutputResultImg
 }
 
+extern "C" JNIEXPORT void JNICALL
+Java_com_benjaminwan_ocrlibrary_OcrEngine_enableResultText(JNIEnv *env, jobject thiz, jstring input) {
+    std::string argImgPath, imgPath, imgName;
+    const char *inputStr = jstringToChar(env, input);
+    argImgPath = std::string(inputStr);
+    imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
+    imgName = argImgPath.substr(argImgPath.find_last_of('/') + 1);
+    ocrLite->enableResultTxt(imgPath.c_str(), imgName.c_str());
+}
+
 extern "C" JNIEXPORT jboolean JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_initModels(JNIEnv *env, jobject thiz, jstring path) {
     const char *models = jstringToChar(env, path);
@@ -62,7 +72,6 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jstr
     imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
     imgName = argImgPath.substr(argImgPath.find_last_of('/') + 1);
     printf("imgPath=%s, imgName=%s\n", imgPath.c_str(), imgName.c_str());
-    ocrLite->initResultTxtPath(imgPath.c_str(), imgName.c_str());
     OcrResult result = ocrLite->detect(imgPath.c_str(), imgName.c_str(),
                                        padding, reSize,
                                        boxScoreThresh, boxThresh, minArea,

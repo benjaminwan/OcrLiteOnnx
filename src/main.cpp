@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
             false,//isOutputDebugImg
             true);//isOutputResultImg
 
-    ocrLite.initResultTxtPath(imgPath.c_str(), imgName.c_str());
+    ocrLite.enableResultTxt(imgPath.c_str(), imgName.c_str());
 
     bool ret = ocrLite.initModels(modelsDir.c_str());
     if (!ret) return -1;

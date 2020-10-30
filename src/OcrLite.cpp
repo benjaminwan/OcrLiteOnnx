@@ -30,7 +30,7 @@ void OcrLite::initLogger(bool isConsole, bool isPartImg, bool isAngleImg, bool i
     isOutputResultImg = isResultImg;
 }
 
-void OcrLite::initResultTxtPath(const char *path, const char *imgName) {
+void OcrLite::enableResultTxt(const char *path, const char *imgName) {
     isOutputResultTxt = true;
     std::string resultTxtPath = getResultTxtFilePath(path, imgName);
     printf("resultTxtPath(%s)\n", resultTxtPath.c_str());

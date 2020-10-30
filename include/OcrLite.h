@@ -13,7 +13,7 @@ public:
 
     void initLogger(bool isConsole, bool isPartImg, bool isAngleImg, bool isDebugImg, bool isResultImg);
 
-    void initResultTxtPath(const char *path, const char *imgName);
+    void enableResultTxt(const char *path, const char *imgName);
 
     bool initModels(const char *path);
 
