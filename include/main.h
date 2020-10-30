@@ -22,7 +22,7 @@ static const struct option long_options[] = {
 const char *usageMsg = "(-d --models) (-i --image)\n"\
                        "[-t --numThread] [-p --padding] [-s --imgResize]\n" \
                        "[-b --boxScoreThresh] [-o --boxThresh] [-m --minArea]\n" \
-                       "[-u --unClipRatio]  [-n --noAngle]\n\n";
+                       "[-u --unClipRatio]  [-a --noAngle] [-A --mostAngle]\n\n";
 
 const char *requiredMsg = "-d --models: models directory.\n" \
                           "-i --image: path of target image.\n\n";
