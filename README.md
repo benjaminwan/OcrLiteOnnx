@@ -51,7 +51,7 @@ OcrLiteOnnx/onnx
     └── onnxruntime.pdb
 ```
 3. opencv 3
-4. java(可选)，编译为供java调用的动态运行库时，需要安装，编译为可执行文件无需安装java。
+4. jdk1.8(可选)，编译为供java调用的动态运行库时，需要安装，编译为可执行文件无需安装java。
 
 ##### Windows编译说明
 1.  Windows10 x64 /VS2019或VS2017
@@ -116,7 +116,7 @@ brew ln opencv3 --force
 * TextBoxScore(文字框置信度)、
 * TextBoxPos(文字框坐标)、
 * Angle(方向索引、方向置信度)、
-* angleTime(方向识别耗时)、
+* AngleTime(方向识别耗时)、
 * textLine(识别到的文字)
 * textScores(各个文字的置信度)、
 * getTextLineTime(文字识别耗时)、
