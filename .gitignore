@@ -142,4 +142,5 @@ test_imgs/*-result.jpg
 test_imgs/*-result.txt
 /models/*.onnx
 /onnx
-/build-jni
+/build-lib
+/build-lib-win
