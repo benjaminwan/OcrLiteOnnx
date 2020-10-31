@@ -542,7 +542,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     int thickness = getThickness(src);
 
     Logger("=====Start detect=====\n");
-    Logger("ScaleParam(sw:%d,sh:%d,dw:%d,dH%d,%f,%f)\n", scale.srcWidth, scale.srcHeight,
+    Logger("ScaleParam(sw:%d,sh:%d,dw:%d,dh:%d,%f,%f)\n", scale.srcWidth, scale.srcHeight,
            scale.dstWidth, scale.dstHeight,
            scale.scaleWidth, scale.scaleHeight);
 
