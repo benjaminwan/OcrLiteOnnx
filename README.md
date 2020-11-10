@@ -31,6 +31,7 @@ OcrLiteOnnx/models
 2. onnx动态库版本为1.5.2，[下载地址](https://github.com/microsoft/onnxruntime/releases/tag/v1.5.2)，根据需要编译的平台，把文件解压到项目根目录。解压后目录结构为
 ```
 OcrLiteOnnx/onnx
+├── ONNXConfig.cmake
 ├── include
 │   └── onnx
 │       ├── cpu_provider_factory.h
@@ -53,7 +54,7 @@ OcrLiteOnnx/onnx
 3. opencv 3
 4. jdk1.8(可选)，编译为供java调用的动态运行库时，需要安装，编译为可执行文件无需安装java。
 
-##### Windows编译说明
+##### Windows命令行编译说明
 1.  Windows10 x64 /VS2019或VS2017
 2.  cmake请自行下载&配置
 3.  下载opencv-3.4.11-vc14_vc15.exe，[下载地址](https://github.com/opencv/opencv/releases/tag/3.4.11)，把文件解压到项目根目录。解压后目录结构为
@@ -78,6 +79,12 @@ OcrLiteOnnx/opencv
 * 编辑“系统变量”Path，Win7在变量值头部添加```%JAVA_HOME%\bin;``` ，win10直接添加一行```%JAVA_HOME%\bin```
 * 开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到OcrLiteOnnx根目录
 * 运行```build-lib-win.cmd```编译为动态运行库
+
+#### Windows Visual Studio编译说明
+VS2017/VS2019，cmake，opencv……等安装配置参考上述步骤
+运行generate-vs-project.cmd，用于生成visual studio项目解决方案。
+根据你的编译环境，进入build-vs201n-x86或x64文件夹，打开OcrLiteOnnx.sln。
+在顶部工具栏选择Debug或Release，在右边的"解决方案"窗口，右键选中"ALL_BUILD"->生成。
 
 ##### Mac编译说明
 1.  macOS Catalina 10.15.x
@@ -147,7 +154,8 @@ onnxruntime设置线程数分为2个部分:
 11. ```-A或--mostAngle```：启用(1)/禁用(0) 角度投票(整张图片以最大可能文字方向来识别)，当禁用文字方向检测时，此项也不起作用。
 12. ```-?或--help```：打印命令行帮助。
 
-#### Windows静态编译opencv3
+#### Windows静态编译opencv3(非必须步骤)
+不想自己编译的话，可以从顶部地址下载编译好的库文件。
 因为只是用opencv做一些图像处理和变换，所以不需要它自带的推理模块，video模块等等，可以去掉这些模块以减小程序大小。
 同时，静态编译opencv，让编译出来的可执行程序不用再依赖外部的dll。
 编译环境vs2017/vs2019，cmake，git……等请参考前文配置，或自行查找资料。
@@ -164,8 +172,8 @@ cd opencv
 git checkout 3.4.11
 ```
 
-##### windows的opencv编译脚本
-根据自己的编译环境，选择“scripts”文件夹里任一脚本：
+##### 选择opencv编译脚本
+根据自己的编译环境，选择“scripts”文件夹里任一脚本，并复制到opencv文件夹：
 ```
 build-opencv-win-vs-full.bat：windows下使用visutal studio编译opencv完整版
 build-opencv-win-vs-lite.bat：windows下使用visutal studio编译opencv精简版
@@ -181,6 +189,7 @@ build-opencv-win-nmake-lite.bat：windows下使用命令行编译opencv精简版
 生成的sdk包在install文件夹里
 
 ##### 编译opencv@Windows by nmake
+跟上述的步骤没什么不同，二选一即可
 开始菜单找到如下命令工具，转到opencv目录执行bat脚本，会生成对应x86或x64的编译结果：
 "x64 Native Tools Command Prompt for VS 2019"
 "x86 Native Tools Command Prompt for VS 2019"
@@ -221,13 +230,14 @@ set(OpenCV_STATIC ON)
 ```
 
 #### Windows静态编译onnxruntime
+不想自己编译的话，可以从顶部地址下载编译好的库文件。
 同步源代码：略……
 ```
 build-onnxruntime-win-x64.bat：编译64位版本
 build-onnxruntime-win-x86.bat：编译32位版本
 ```
 脚本里的```--skip_submodule_sync```参数，用于跳过每次编译前的同步子项目源代码步骤，第一次执行编译请去掉此参数，让编译脚本完整同步完所有源代码
-编译成功后，在builid文件夹里找到相关的lib，并复制到onnx目录，把scripts文件夹里的ONNXConfig.cmake也一起复制到onnx目录，最终目录结构如下
+编译成功后，在builid文件夹里找到相关的lib，并复制到onnx目录，最终目录结构如下
 ```
 OcrLiteOnnx/onnx
 ├── ONNXConfig.cmake

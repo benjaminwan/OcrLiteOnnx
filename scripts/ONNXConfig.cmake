@@ -1,8 +1,0 @@
-link_directories(${CMAKE_CURRENT_LIST_DIR}/windows)
-
-set(ONNX_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/include")
-
-file(GLOB ALL_ONNX_STATIC_LIBS ${CMAKE_CURRENT_LIST_DIR}/windows/*.lib)
-set(ONNX_LIBS ${ALL_ONNX_STATIC_LIBS})
-
-set(ONNX_FOUND TRUE)
