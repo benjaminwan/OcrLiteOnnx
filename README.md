@@ -234,6 +234,7 @@ set(OpenCV_STATIC ON)
 #### Windows静态编译onnxruntime
 * 不想自己编译的话，可以从顶部地址下载编译好的库文件。
 * 同步源代码：略……
+* 在scripts文件夹里找到需要的脚本，并复制到onnxruntime源代码目录
 ```
 build-onnxruntime-win-x64.bat：编译64位版本
 build-onnxruntime-win-x86.bat：编译32位版本
