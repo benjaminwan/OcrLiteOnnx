@@ -81,10 +81,10 @@ OcrLiteOnnx/opencv
 * 运行```build-lib-win.cmd```编译为动态运行库
 
 ##### Windows Visual Studio编译说明
-VS2017/VS2019，cmake，opencv……等安装配置参考上述步骤
-运行generate-vs-project.cmd，用于生成visual studio项目解决方案。
-根据你的编译环境，进入build-vs201n-x86或x64文件夹，打开OcrLiteOnnx.sln。
-在顶部工具栏选择Debug或Release，在右边的"解决方案"窗口，右键选中"ALL_BUILD"->生成。
+* VS2017/VS2019，cmake，opencv……等安装配置参考上述步骤。
+* 运行generate-vs-project.cmd，生成visual studio项目解决方案。
+* 根据你的编译环境，进入build-vs201n-x86或x64文件夹，打开OcrLiteOnnx.sln。
+* 在顶部工具栏选择Debug或Release，在右边的"解决方案"窗口，右键选中"ALL_BUILD"->生成。
 
 ##### Mac编译说明
 1.  macOS Catalina 10.15.x
@@ -155,10 +155,10 @@ onnxruntime设置线程数分为2个部分:
 12. ```-?或--help```：打印命令行帮助。
 
 #### Windows静态编译opencv3(非必须步骤)
-不想自己编译的话，可以从顶部地址下载编译好的库文件。
-因为只是用opencv做一些图像处理和变换，所以不需要它自带的推理模块，video模块等等，可以去掉这些模块以减小程序大小。
-同时，静态编译opencv，让编译出来的可执行程序不用再依赖外部的dll。
-编译环境vs2017/vs2019，cmake，git……等请参考前文配置，或自行查找资料。
+* 不想自己编译的话，可以从顶部地址下载编译好的库文件。
+* 编译环境vs2017/vs2019，cmake，git……等请参考前文配置，或自行查找资料。
+* 因为只是用opencv做一些图像处理和变换，所以不需要它自带的推理模块，video模块等等，可以去掉这些模块以减小程序大小。
+* 静态编译opencv，让编译出来的可执行程序不用再依赖外部的dll。
 
 ##### 同步opencv源码
 ```
@@ -182,20 +182,22 @@ build-opencv-win-nmake-lite.bat：windows下使用命令行编译opencv精简版
 ```
 
 ##### 编译opencv@Windows by visutal studio
-用cmd执行bat后，会创建4个文件夹，根据你的开发环境，进入对应的文件夹，用Visual Studio打开OpenCV.sln
-先在工具栏选择你要的Debug或者Release
-然后在右边的“解决方案资源管理器”里找到“ALL_BUILD”->右键->执行“生成”
-编译成功后，同样在右边找到“INSTALL”->右键->执行“生成”
-生成的sdk包在install文件夹里
+* 用cmd执行bat后，会创建4个文件夹，根据你的开发环境，进入对应的文件夹，用Visual Studio打开OpenCV.sln
+* 先在工具栏选择你要的Debug或者Release
+* 然后在右边的“解决方案资源管理器”里找到“ALL_BUILD”->右键->执行“生成”
+* 编译成功后，同样在右边找到“INSTALL”->右键->执行“生成”
+* 生成的sdk包在install文件夹里
 
 ##### 编译opencv@Windows by nmake
-跟上述的步骤没什么不同，二选一即可
-开始菜单找到如下命令工具，转到opencv目录执行bat脚本，会生成对应x86或x64的编译结果：
-"x64 Native Tools Command Prompt for VS 2019"
-"x86 Native Tools Command Prompt for VS 2019"
-"适用于 VS2017 的 x64 本机工具"
-"x86 Native Tools Command Prompt for VS 2017"
-nmake版直接会生成sdk包，在build-xxx的install文件夹里
+* 跟上述的步骤没什么不同，二选一即可
+* 开始菜单找到如下命令工具，转到opencv目录执行bat脚本，会生成对应x86或x64的编译结果：
+```
+"x64 Native Tools Command Prompt for VS 2019" : vs2019编译64位应用程序
+"x86 Native Tools Command Prompt for VS 2019" : vs2019编译32位应用程序
+"适用于 VS2017 的 x64 本机工具" : vs2017编译64位应用程序
+"x86 Native Tools Command Prompt for VS 2017" : vs2017编译64位应用程序
+```
+nmake直接会生成sdk包，在build-xxx的install文件夹里
 
 ##### 修复opencv静态库
 1. (完整版不需要此步骤)精简版因为许多模块去除了，要把头文件的引用也注释，否则会造成编译错误
@@ -230,8 +232,8 @@ set(OpenCV_STATIC ON)
 ```
 
 #### Windows静态编译onnxruntime
-不想自己编译的话，可以从顶部地址下载编译好的库文件。
-同步源代码：略……
+* 不想自己编译的话，可以从顶部地址下载编译好的库文件。
+* 同步源代码：略……
 ```
 build-onnxruntime-win-x64.bat：编译64位版本
 build-onnxruntime-win-x86.bat：编译32位版本
@@ -267,45 +269,4 @@ OcrLiteOnnx/onnx
     ├── onnxruntime_util.lib
     └── re2.lib
 
-```
-
-#### Windows使用静态编译的onnxruntime
-修改OcrLiteOnnx/CMakeLists.txt
-```
-原来的
-if (APPLE)
-    message("配置MACOS ONNX 路径")
-    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/macos)
-elseif (WIN32)
-    message("配置WINDOWS ONNX 路径")
-    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/windows)
-elseif (UNIX)
-    message("配置LINUX ONNX 路径")
-    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/linux)
-endif ()
-
-改成
-if (APPLE)
-    message("配置MACOS ONNX 路径")
-    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/macos)
-elseif (WIN32)
-    message("配置WINDOWS ONNX 路径")
-    set(ONNX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnx")
-    find_package(ONNX REQUIRED)
-    if (ONNX_FOUND)
-        message(STATUS "ONNX_LIBS: ${ONNX_LIBS}")
-        message(STATUS "ONNX_INCLUDE_DIRS: ${ONNX_INCLUDE_DIRS}")
-    else ()
-        message(FATAL_ERROR "onnxruntime Not Found!")
-    endif (ONNX_FOUND)
-elseif (UNIX)
-    message("配置LINUX ONNX 路径")
-    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/linux)
-endif ()
-
-原来的
-target_link_libraries(OcrLiteOnnx onnxruntime ${OpenCV_LIBS})
-
-改成
-target_link_libraries(OcrLiteOnnx ${ONNX_LIBS} ${OpenCV_LIBS})
 ```
