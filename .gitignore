@@ -144,3 +144,4 @@ test_imgs/*-result.txt
 /onnx
 /build-lib
 /build-lib-win
+/opencv
