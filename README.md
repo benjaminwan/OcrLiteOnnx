@@ -80,7 +80,7 @@ OcrLiteOnnx/opencv
 * 开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到OcrLiteOnnx根目录
 * 运行```build-lib-win.cmd```编译为动态运行库
 
-#### Windows Visual Studio编译说明
+##### Windows Visual Studio编译说明
 VS2017/VS2019，cmake，opencv……等安装配置参考上述步骤
 运行generate-vs-project.cmd，用于生成visual studio项目解决方案。
 根据你的编译环境，进入build-vs201n-x86或x64文件夹，打开OcrLiteOnnx.sln。
