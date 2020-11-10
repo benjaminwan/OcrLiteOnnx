@@ -146,3 +146,156 @@ onnxruntime设置线程数分为2个部分:
 10. ```-a或--noAngle```：启用(1)/禁用(0) 文字方向检测，只有图片倒置的情况下(旋转90~270度的图片)，才需要启用文字方向检测。
 11. ```-A或--mostAngle```：启用(1)/禁用(0) 角度投票(整张图片以最大可能文字方向来识别)，当禁用文字方向检测时，此项也不起作用。
 12. ```-?或--help```：打印命令行帮助。
+
+#### Windows静态编译opencv3
+因为只是用opencv做一些图像处理和变换，所以不需要它自带的推理模块，video模块等等，可以去掉这些模块以减小程序大小。
+同时，静态编译opencv，让编译出来的可执行程序不用再依赖外部的dll。
+编译环境vs2017/vs2019，cmake，git……等请参考前文配置，或自行查找资料。
+
+##### 同步opencv源码
+```
+下载安装cgit(通过gitclone缓存加速)
+cgit clone https://github.com/opencv/opencv.git
+```
+
+##### 检出opencv3.4.11
+```
+cd opencv
+git checkout 3.4.11
+```
+
+##### windows的opencv编译脚本
+根据自己的编译环境，选择“scripts”文件夹里任一脚本：
+```
+build-opencv-win-vs-full.bat：windows下使用visutal studio编译opencv完整版
+build-opencv-win-vs-lite.bat：windows下使用visutal studio编译opencv精简版
+build-opencv-win-nmake-full.bat：windows下使用命令行编译opencv完整版
+build-opencv-win-nmake-lite.bat：windows下使用命令行编译opencv精简版
+```
+
+##### 编译opencv@Windows by visutal studio
+用cmd执行bat后，会创建4个文件夹，根据你的开发环境，进入对应的文件夹，用Visual Studio打开OpenCV.sln
+先在工具栏选择你要的Debug或者Release
+然后在右边的“解决方案资源管理器”里找到“ALL_BUILD”->右键->执行“生成”
+编译成功后，同样在右边找到“INSTALL”->右键->执行“生成”
+生成的sdk包在install文件夹里
+
+##### 编译opencv@Windows by nmake
+开始菜单找到如下命令工具，转到opencv目录执行bat脚本，会生成对应x86或x64的编译结果：
+"x64 Native Tools Command Prompt for VS 2019"
+"x86 Native Tools Command Prompt for VS 2019"
+"适用于 VS2017 的 x64 本机工具"
+"x86 Native Tools Command Prompt for VS 2017"
+nmake版直接会生成sdk包，在build-xxx的install文件夹里
+
+##### 修复opencv静态库
+1. (完整版不需要此步骤)精简版因为许多模块去除了，要把头文件的引用也注释，否则会造成编译错误
+```
+修改install/x64(或x86)/include/opencv/cv.h，注释如下行
+//#include "opencv2/photo/photo_c.h"
+//#include "opencv2/video/tracking_c.h"
+//#include "opencv2/objdetect/objdetect_c.h"
+
+修改install/x64(或x86)/include/opencv/cv.hpp，注释如下行
+//#include "opencv2/photo.hpp"
+//#include "opencv2/video.hpp"
+//#include "opencv2/features2d.hpp"
+//#include "opencv2/calib3d.hpp"
+//#include "opencv2/objdetect.hpp"
+```
+2. 修改staticlib的OpenCVConfig.cmake文件
+```
+修改install\x64(或x86)\vc15(或vc16)\staticlib\OpenCVConfig.cmake
+
+把此行
+set(OpenCV_LIB_COMPONENTS opencv_core;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_world)
+
+修改成这样
+set(OpenCV_LIB_COMPONENTS opencv_world)
+```
+3. 修改总体的OpenCVConfig.cmake
+```
+修改install\OpenCVConfig.cmake
+添加在if(CMAKE_VERSION VERSION_GREATER 2.6)前添加一行
+set(OpenCV_STATIC ON)
+```
+
+#### Windows静态编译onnxruntime
+同步源代码：略……
+```
+build-onnxruntime-win-x64.bat：编译64位版本
+build-onnxruntime-win-x86.bat：编译32位版本
+```
+脚本里的```--skip_submodule_sync```参数，用于跳过每次编译前的同步子项目源代码步骤，第一次执行编译请去掉此参数，让编译脚本完整同步完所有源代码
+编译成功后，在builid文件夹里找到相关的lib，并复制到onnx目录，把scripts文件夹里的ONNXConfig.cmake也一起复制到onnx目录，最终目录结构如下
+```
+OcrLiteOnnx/onnx
+├── ONNXConfig.cmake
+├── include
+│   └── onnx
+│       ├── automl_data_containers.h
+│       ├── environment.h
+│       ├── experimental_onnxruntime_cxx_api.h
+│       ├── experimental_onnxruntime_cxx_inline.h
+│       ├── onnxruntime_c_api.h
+│       ├── onnxruntime_cxx_api.h
+│       ├── onnxruntime_cxx_inline.h
+│       └── onnxruntime_session_options_config_keys.h
+└── windows
+    ├── flatbuffers.lib
+    ├── libprotobuf-lite.lib
+    ├── onnx.lib
+    ├── onnx_proto.lib
+    ├── onnxruntime_common.lib
+    ├── onnxruntime_flatbuffers.lib
+    ├── onnxruntime_framework.lib
+    ├── onnxruntime_graph.lib
+    ├── onnxruntime_mlas.lib
+    ├── onnxruntime_optimizer.lib
+    ├── onnxruntime_providers.lib
+    ├── onnxruntime_session.lib
+    ├── onnxruntime_util.lib
+    └── re2.lib
+
+```
+
+#### Windows使用静态编译的onnxruntime
+修改OcrLiteOnnx/CMakeLists.txt
+```
+原来的
+if (APPLE)
+    message("配置MACOS ONNX 路径")
+    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/macos)
+elseif (WIN32)
+    message("配置WINDOWS ONNX 路径")
+    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/windows)
+elseif (UNIX)
+    message("配置LINUX ONNX 路径")
+    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/linux)
+endif ()
+
+改成
+if (APPLE)
+    message("配置MACOS ONNX 路径")
+    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/macos)
+elseif (WIN32)
+    message("配置WINDOWS ONNX 路径")
+    set(ONNX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnx")
+    find_package(ONNX REQUIRED)
+    if (ONNX_FOUND)
+        message(STATUS "ONNX_LIBS: ${ONNX_LIBS}")
+        message(STATUS "ONNX_INCLUDE_DIRS: ${ONNX_INCLUDE_DIRS}")
+    else ()
+        message(FATAL_ERROR "onnxruntime Not Found!")
+    endif (ONNX_FOUND)
+elseif (UNIX)
+    message("配置LINUX ONNX 路径")
+    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnx/linux)
+endif ()
+
+原来的
+target_link_libraries(OcrLiteOnnx onnxruntime ${OpenCV_LIBS})
+
+改成
+target_link_libraries(OcrLiteOnnx ${ONNX_LIBS} ${OpenCV_LIBS})
+```
