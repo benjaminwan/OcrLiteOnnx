@@ -4,10 +4,7 @@
 #include <fstream>
 #include "OcrLite.h"
 #include "OcrUtils.h"
-
-#ifdef _WIN32
-#include <stdarg.h> //windows
-#endif
+#include <stdarg.h> //windows&linux
 
 OcrLite::OcrLite(int numOfThread) {
     numThread = numOfThread;
@@ -183,6 +180,7 @@ void OcrLite::Logger(const char *format, ...) {
     va_end(args);
     if (isOutputConsole) printf("%s", buffer);
     if (isOutputResultTxt) fprintf(resultTxt, "%s", buffer);
+    free(buffer);
 }
 
 std::vector<TextBox>
