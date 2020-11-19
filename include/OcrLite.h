@@ -40,7 +40,7 @@ private:
     int numThread = 0;
     Env env = Env(ORT_LOGGING_LEVEL_ERROR, "OcrLite");
     SessionOptions sessionOptions;
-    DbNet dbnet;
+    DbNet dbNet;
     AngleNet angleNet;
     CrnnNet crnnNet;
 

@@ -48,7 +48,7 @@ void OcrLite::initModels(const char *path) {
     sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 
     Logger("--- Init DbNet ---\n");
-    dbnet.initModel(pathStr, env, sessionOptions);
+    dbNet.initModel(pathStr, env, sessionOptions);
 
     Logger("--- Init AngleNet ---\n");
     angleNet.initModel(pathStr, env, sessionOptions);
@@ -136,7 +136,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
 
     Logger("---------- step: dbNet getTextBoxes ----------\n");
     double startTime = getCurrentTime();
-    vector<TextBox> textBoxes = dbnet.getTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea, unClipRatio);
+    vector<TextBox> textBoxes = dbNet.getTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea, unClipRatio);
     Logger("TextBoxesSize(%ld)\n", textBoxes.size());
     double endDbNetTime = getCurrentTime();
     double dbNetTime = endDbNetTime - startTime;
