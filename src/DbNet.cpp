@@ -79,7 +79,7 @@ DbNet::getTextBoxes(cv::Mat &src, ScaleParam &s,
             minBox[j].y = (std::min)((std::max)(minBox[j].y, 0), s.srcHeight);
         }
 
-        rsBoxes.emplace_back(TextBox(minBox, score));
+        rsBoxes.emplace_back(TextBox{minBox, score});
     }
     reverse(rsBoxes.begin(), rsBoxes.end());
     return rsBoxes;

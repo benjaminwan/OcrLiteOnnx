@@ -61,7 +61,7 @@ void OcrLite::initModels(const char *path) {
 
 void OcrLite::Logger(const char *format, ...) {
     if (!(isOutputConsole || isOutputResultTxt)) return;
-    char *buffer = (char *) malloc(4096);
+    char *buffer = (char *) malloc(8192);
     va_list args;
     va_start(args, format);
     vsprintf(buffer, format, args);
@@ -75,7 +75,7 @@ cv::Mat makePadding(cv::Mat &src, const int padding) {
     if (padding <= 0) return src;
     cv::Scalar paddingScalar = {255, 255, 255};
     cv::Mat paddingSrc;
-    copyMakeBorder(src, paddingSrc, padding, padding, padding, padding, cv::BORDER_ISOLATED, paddingScalar);
+    cv::copyMakeBorder(src, paddingSrc, padding, padding, padding, padding, cv::BORDER_ISOLATED, paddingScalar);
     return paddingSrc;
 }
 
@@ -99,9 +99,18 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     }
 
     ScaleParam scale = getScaleParam(src, resize);
+    OcrResult result;
+    result = detect(path, imgName, src, originRect, scale,
+                    boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
 
-    OcrResult result = detect(path, imgName, src, originRect, scale,
-                              boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
+    /*double startTest = getCurrentTime();
+    int loopCount = 100;
+    for (int i = 0; i < loopCount; ++i) {
+        detect(path, imgName, src, originRect, scale,
+                        boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
+    }
+    double endTest = getCurrentTime();
+    printf("average time=%f\n", (endTest - startTest) / loopCount);*/
 
     return result;
 }
@@ -193,9 +202,9 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
 
     std::vector<TextBlock> textBlocks;
     for (int i = 0; i < textLines.size(); ++i) {
-        TextBlock textBlock(textBoxes[i].boxPoint, textBoxes[i].score, angles[i].index, angles[i].score,
+        TextBlock textBlock{textBoxes[i].boxPoint, textBoxes[i].score, angles[i].index, angles[i].score,
                             angles[i].time, textLines[i].text, textLines[i].charScores, textLines[i].time,
-                            angles[i].time + textLines[i].time);
+                            angles[i].time + textLines[i].time};
         textBlocks.emplace_back(textBlock);
     }
 
@@ -226,5 +235,5 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         strRes.append("\n");
     }
 
-    return OcrResult(textBlocks, dbNetTime, textBoxImg, fullTime, strRes);
+    return OcrResult{dbNetTime, textBlocks, textBoxImg, fullTime, strRes};
 }

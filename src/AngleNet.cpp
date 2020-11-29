@@ -29,7 +29,7 @@ Angle scoreToAngle(const float *srcData, int w) {
             maxValue = srcData[i];
         }
     }
-    return Angle(angleIndex, maxValue);
+    return {angleIndex, maxValue};
 }
 
 Angle AngleNet::getAngle(cv::Mat &src) {
@@ -63,17 +63,20 @@ Angle AngleNet::getAngle(cv::Mat &src) {
 
 std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const char *path,
                                   const char *imgName, bool doAngle, bool mostAngle) {
-    std::vector<Angle> angles;
+    int size = partImgs.size();
+    std::vector<Angle> angles(size);
     if (doAngle) {
-        for (int i = 0; i < partImgs.size(); ++i) {
-            //getAngle
+#ifdef __OPENMP__
+#pragma omp parallel for
+#endif
+        for (int i = 0; i < size; ++i) {
             double startAngle = getCurrentTime();
             auto angleImg = adjustTargetImg(partImgs[i], dstWidth, dstHeight);
             Angle angle = getAngle(angleImg);
             double endAngle = getCurrentTime();
             angle.time = endAngle - startAngle;
 
-            angles.emplace_back(angle);
+            angles[i] = angle;
 
             //OutPut AngleImg
             if (isOutputAngleImg) {
@@ -82,15 +85,14 @@ std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const cha
             }
         }
     } else {
-        for (int i = 0; i < partImgs.size(); ++i) {
-            Angle angle(-1, 0.f);
-            angles.emplace_back(angle);
+        for (int i = 0; i < size; ++i) {
+            angles.emplace_back(Angle{-1, 0.f});
         }
     }
     //Most Possible AngleIndex
     if (doAngle && mostAngle) {
         auto angleIndexes = getAngleIndexes(angles);
-        double sum = accumulate(angleIndexes.begin(), angleIndexes.end(), 0.0);
+        double sum = std::accumulate(angleIndexes.begin(), angleIndexes.end(), 0.0);
         double halfPercent = angles.size() / 2.0f;
         int mostAngleIndex;
         if (sum < halfPercent) {//all angle set to 0

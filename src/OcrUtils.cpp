@@ -64,7 +64,7 @@ ScaleParam getScaleParam(cv::Mat &src, const int targetSize) {
 }
 
 cv::RotatedRect getPartRect(std::vector<cv::Point> &box, float scaleWidth, float scaleHeight) {
-    cv::RotatedRect rect = minAreaRect(box);
+    cv::RotatedRect rect = cv::minAreaRect(box);
     int minSize = rect.size.width > rect.size.height ? rect.size.height : rect.size.width;
     if (rect.size.width > rect.size.height) {
         rect.size.width = rect.size.width + (float) minSize * scaleWidth;
@@ -79,7 +79,7 @@ cv::RotatedRect getPartRect(std::vector<cv::Point> &box, float scaleWidth, float
 std::vector<cv::Point2f> getBox(cv::RotatedRect &rect) {
     cv::Point2f vertices[4];
     rect.points(vertices);
-    //vector<Point2f> ret(4);
+    //std::vector<cv::Point2f> ret(4);
     std::vector<cv::Point2f> ret2(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
     //memcpy(vertices, &ret[0], ret.size() * sizeof(ret[0]));
     return ret2;
@@ -95,16 +95,16 @@ void drawTextBox(cv::Mat &boxImg, cv::RotatedRect &rect, int thickness) {
     cv::Point2f vertices[4];
     rect.points(vertices);
     for (int i = 0; i < 4; i++)
-        line(boxImg, vertices[i], vertices[(i + 1) % 4], cv::Scalar(0, 0, 255), thickness);
-    //polylines(srcmat, textpoint, true, Scalar(0, 255, 0), 2);
+        cv::line(boxImg, vertices[i], vertices[(i + 1) % 4], cv::Scalar(0, 0, 255), thickness);
+    //cv::polylines(srcmat, textpoint, true, cv::Scalar(0, 255, 0), 2);
 }
 
 void drawTextBox(cv::Mat &boxImg, const std::vector<cv::Point> &box, int thickness) {
     auto color = cv::Scalar(255, 0, 0);// R(255) G(0) B(0)
-    line(boxImg, box[0], box[1], color, thickness);
-    line(boxImg, box[1], box[2], color, thickness);
-    line(boxImg, box[2], box[3], color, thickness);
-    line(boxImg, box[3], box[0], color, thickness);
+    cv::line(boxImg, box[0], box[1], color, thickness);
+    cv::line(boxImg, box[1], box[2], color, thickness);
+    cv::line(boxImg, box[2], box[3], color, thickness);
+    cv::line(boxImg, box[3], box[0], color, thickness);
 }
 
 void drawTextBoxes(cv::Mat &boxImg, std::vector<TextBox> &textBoxes, int thickness) {
@@ -162,17 +162,17 @@ cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box) {
     ptsSrc[2] = cv::Point2f(points[2].x, points[2].y);
     ptsSrc[3] = cv::Point2f(points[3].x, points[3].y);
 
-    cv::Mat M = getPerspectiveTransform(ptsSrc, ptsDst);
+    cv::Mat M = cv::getPerspectiveTransform(ptsSrc, ptsDst);
 
     cv::Mat partImg;
-    warpPerspective(imgCrop, partImg, M,
+    cv::warpPerspective(imgCrop, partImg, M,
                     cv::Size(imgCropWidth, imgCropHeight),
                     cv::BORDER_REPLICATE);
 
     if (float(partImg.rows) >= float(partImg.cols) * 1.5) {
         cv::Mat srcCopy = cv::Mat(partImg.rows, partImg.cols, partImg.depth());
-        transpose(partImg, srcCopy);
-        flip(srcCopy, srcCopy, 0);
+        cv::transpose(partImg, srcCopy);
+        cv::flip(srcCopy, srcCopy, 0);
         return srcCopy;
     } else {
         return partImg;
@@ -183,7 +183,7 @@ cv::Mat adjustTargetImg(cv::Mat &src, int dstWidth, int dstHeight) {
     cv::Mat srcResize;
     float scale = (float) dstHeight / (float) src.rows;
     int angleWidth = int((float) src.cols * scale);
-    resize(src, srcResize, cv::Size(angleWidth, dstHeight));
+    cv::resize(src, srcResize, cv::Size(angleWidth, dstHeight));
     cv::Mat srcFit = cv::Mat(dstHeight, dstWidth, CV_8UC3, cv::Scalar(255, 255, 255));
     if (angleWidth < dstWidth) {
         cv::Rect rect(0, 0, srcResize.cols, srcResize.rows);
@@ -202,9 +202,9 @@ bool cvPointCompare(cv::Point a, cv::Point b) {
 int
 getMiniBoxes(std::vector<cv::Point> &inVec, std::vector<cv::Point> &minBoxVec, float &minEdgeSize,
              float &allEdgeSize) {
-    cv::RotatedRect textRect = minAreaRect(inVec);
+    cv::RotatedRect textRect = cv::minAreaRect(inVec);
     cv::Mat boxPoints2f;
-    boxPoints(textRect, boxPoints2f);
+    cv::boxPoints(textRect, boxPoints2f);
 
     float *p1 = (float *) boxPoints2f.data;
     std::vector<cv::Point> tmpVec;
@@ -212,7 +212,7 @@ getMiniBoxes(std::vector<cv::Point> &inVec, std::vector<cv::Point> &minBoxVec, f
         tmpVec.emplace_back((int) (p1[0]), (int) (p1[1]));
     }
 
-    sort(tmpVec.begin(), tmpVec.end(), cvPointCompare);
+    std::sort(tmpVec.begin(), tmpVec.end(), cvPointCompare);
 
     minBoxVec.clear();
 
@@ -274,18 +274,18 @@ float boxScoreFast(cv::Mat &mapmat, std::vector<cv::Point> &_box) {
     std::vector<std::vector<cv::Point>> tmpbox;
     tmpbox.push_back(box);
     cv::Mat maskmat(ymax - ymin + 1, xmax - xmin + 1, CV_8UC1, cv::Scalar(0, 0, 0));
-    fillPoly(maskmat, tmpbox, cv::Scalar(1, 1, 1), 1);
+    cv::fillPoly(maskmat, tmpbox, cv::Scalar(1, 1, 1), 1);
 
-    // 	Mat normat;
-    // 	normalize(maskmat, normat, 255, 0, NORM_MINMAX);
+    // 	cv::Mat normat;
+    // 	cv::normalize(maskmat, normat, 255, 0, cv::NORM_MINMAX);
     //
-    // 	Mat maskbinmat;
+    // 	cv::Mat maskbinmat;
     // 	normat.convertTo(maskbinmat, CV_8UC1, 1);
     // 	imwrite("subbin.jpg", maskbinmat);
 
-    //cout << mapmat << endl;
+    //std::cout << mapmat << std::endl;
 
-    return mean(mapmat(cv::Rect(cv::Point(xmin, ymin), cv::Point(xmax + 1, ymax + 1))).clone(),
+    return cv::mean(mapmat(cv::Rect(cv::Point(xmin, ymin), cv::Point(xmax + 1, ymax + 1))).clone(),
                     maskmat).val[0];
 
 }
@@ -416,7 +416,7 @@ int getMostProbabilityAngleIndex(std::vector<int> &input, double mean, double st
 }
 
 void saveImg(cv::Mat &img, const char *imgPath) {
-    imwrite(imgPath, img);
+    cv::imwrite(imgPath, img);
 }
 
 std::string getSrcImgFilePath(const char *path, const char *imgName) {
