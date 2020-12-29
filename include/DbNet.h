@@ -2,20 +2,27 @@
 #define __OCR_DBNET_H__
 
 #include "OcrStruct.h"
-#include "onnx/onnxruntime_cxx_api.h"
+#include "onnxruntime_cxx_api.h"
 #include <opencv/cv.hpp>
 
 class DbNet {
 public:
+    DbNet();
+
     ~DbNet();
 
-    bool initModel(std::string &pathStr, Ort::Env &env, Ort::SessionOptions &sessionOptions);
+    void setNumThread(int numOfThread);
+
+    bool initModel(std::string &pathStr);
 
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s, float boxScoreThresh,
-                                 float boxThresh, float minArea, float unClipRatio);
+                                      float boxThresh, float minArea, float unClipRatio);
 
 private:
-    std::unique_ptr<Ort::Session> session;
+    Ort::Session *session;
+    Ort::Env *env;
+    Ort::SessionOptions *sessionOptions;
+    int numThread = 0;
     std::vector<const char *> inputNames;
     std::vector<const char *> outputNames;
 

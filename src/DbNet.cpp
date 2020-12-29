@@ -1,16 +1,56 @@
 #include "DbNet.h"
 #include "OcrUtils.h"
 
-DbNet::~DbNet() {
-    session.release();
+DbNet::DbNet() {
+    env = new Ort::Env(ORT_LOGGING_LEVEL_ERROR, "DbNet");
+    sessionOptions = new Ort::SessionOptions();
 }
 
-bool DbNet::initModel(std::string &pathStr, Ort::Env &env, Ort::SessionOptions &sessionOptions) {
+DbNet::~DbNet() {
+    for (int i = 0; i < inputNames.size(); ++i) {
+        free((void *) inputNames[i]);
+    }
+    inputNames.clear();
+    for (int i = 0; i < outputNames.size(); ++i) {
+        free((void *) outputNames[i]);
+    }
+    outputNames.clear();
+    session->release();
+    delete session;
+    sessionOptions->release();
+    delete sessionOptions;
+    env->release();
+    delete env;
+}
+
+void DbNet::setNumThread(int numOfThread) {
+    numThread = numOfThread;
+    //===session options===
+    // Sets the number of threads used to parallelize the execution within nodes
+    // A value of 0 means ORT will pick a default
+    //sessionOptions.SetIntraOpNumThreads(numThread);
+    //set OMP_NUM_THREADS=16
+
+    // Sets the number of threads used to parallelize the execution of the graph (across nodes)
+    // If sequential execution is enabled this value is ignored
+    // A value of 0 means ORT will pick a default
+    sessionOptions->SetInterOpNumThreads(numThread);
+
+    // Sets graph optimization level
+    // ORT_DISABLE_ALL -> To disable all optimizations
+    // ORT_ENABLE_BASIC -> To enable basic optimizations (Such as redundant node removals)
+    // ORT_ENABLE_EXTENDED -> To enable extended optimizations (Includes level 1 + more complex optimizations like node fusions)
+    // ORT_ENABLE_ALL -> To Enable All possible opitmizations
+    sessionOptions->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+}
+
+bool DbNet::initModel(std::string &pathStr) {
 #ifdef _WIN32
     std::wstring dbPath = strToWstr(pathStr + "/dbnet.onnx");
-    session = makeUnique<Ort::Session>(env, dbPath.c_str(), sessionOptions);
+    session = new Ort::Session(*env, dbPath.c_str(), *sessionOptions);
 #else
-    session = makeUnique<Ort::Session>(env, (pathStr + "/dbnet.onnx").c_str(), sessionOptions);
+    std::string fullPath = pathStr + "/dbnet.onnx";
+    session = new Ort::Session(*env, fullPath.c_str(), *sessionOptions);
 #endif
     inputNames = getInputNames(session);
     outputNames = getOutputNames(session);
@@ -29,8 +69,8 @@ DbNet::getTextBoxes(cv::Mat &src, ScaleParam &s,
     auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
     Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
-                                                   inputTensorValues.size(), inputShape.data(),
-                                                   inputShape.size());
+                                                             inputTensorValues.size(), inputShape.data(),
+                                                             inputShape.size());
     assert(inputTensor.IsTensor());
 
     auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,

@@ -2,7 +2,7 @@
 #define __OCR_LITE_H__
 
 #include "opencv2/core.hpp"
-#include "onnx/onnxruntime_cxx_api.h"
+#include "onnxruntime_cxx_api.h"
 #include "OcrStruct.h"
 #include "DbNet.h"
 #include "AngleNet.h"
@@ -33,9 +33,6 @@ private:
     bool isOutputResultTxt = false;
     bool isOutputResultImg = false;
     FILE *resultTxt;
-    int numThread = 0;
-    Ort::Env env = Ort::Env(ORT_LOGGING_LEVEL_ERROR, "OcrLite");
-    Ort::SessionOptions sessionOptions;
     DbNet dbNet;
     AngleNet angleNet;
     CrnnNet crnnNet;

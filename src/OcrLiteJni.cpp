@@ -7,6 +7,15 @@
 
 static OcrLite *ocrLite;
 
+JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved){
+    return JNI_VERSION_1_4;
+}
+
+JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved){
+    //printf("JNI_OnUnload\n");
+	free(ocrLite);
+}
+
 #ifdef _WIN32
 char *jstringToChar(JNIEnv *env, jstring jstr) {
     char *rtn = NULL;
@@ -68,20 +77,20 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_initLogger(JNIEnv *env, jobject thiz, 
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_enableResultText(JNIEnv *env, jobject thiz, jstring input) {
-    std::string argImgPath, imgPath, imgName;
     char *inputStr = jstringToChar(env, input);
-    argImgPath = std::string(inputStr);
-    imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
-    imgName = argImgPath.substr(argImgPath.find_last_of('/') + 1);
+    std::string argImgPath = std::string(inputStr);
+    std::string imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
+    std::string imgName = argImgPath.substr(argImgPath.find_last_of('/') + 1);
     ocrLite->enableResultTxt(imgPath.c_str(), imgName.c_str());
     free(inputStr);
 }
 
 extern "C" JNIEXPORT jboolean JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_initModels(JNIEnv *env, jobject thiz, jstring path) {
-    const char *models = jstringToChar(env, path);
+    char *models = jstringToChar(env, path);
     printf("models dir=%s\n", models);
     ocrLite->initModels(models);
+	free(models);
     return true;
 }
 
@@ -92,16 +101,31 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jstr
                                                  jfloat minArea, jfloat unClipRatio,
                                                  jboolean doAngle, jboolean mostAngle
 ) {
-    std::string argImgPath, imgPath, imgName;
-    const char *inputStr = jstringToChar(env, input);
-    argImgPath = std::string(inputStr);
-    imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
-    imgName = argImgPath.substr(argImgPath.find_last_of('/') + 1);
+#ifdef __LEAK_TRACER__
+    leaktracer::MemoryTrace::GetInstance().startMonitoringAllThreads();
+#endif
+
+    char *inputStr = jstringToChar(env, input);
+    std::string  argImgPath = std::string(inputStr);
+    std::string  imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
+    std::string  imgName = argImgPath.substr(argImgPath.find_last_of('/') + 1);
     printf("imgPath=%s, imgName=%s\n", imgPath.c_str(), imgName.c_str());
     OcrResult result = ocrLite->detect(imgPath.c_str(), imgName.c_str(),
                                        padding, reSize,
                                        boxScoreThresh, boxThresh, minArea,
                                        unClipRatio, doAngle, mostAngle);
+
+	free(inputStr);
+	
+#ifdef __LEAK_TRACER__
+    leaktracer::MemoryTrace::GetInstance().stopAllMonitoring();
+    std::ofstream oleaks;
+    oleaks.open("leaks.out", std::ios_base::out);
+    if (oleaks.is_open())
+        leaktracer::MemoryTrace::GetInstance().writeLeaks(oleaks);
+    else
+        std::cerr << "Failed to write to \"leaks.out\"\n";
+#endif
 
     return OcrResultUtils(env, result).getJObject();
 }

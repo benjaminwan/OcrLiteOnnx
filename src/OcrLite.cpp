@@ -3,7 +3,9 @@
 #include <stdarg.h> //windows&linux
 
 OcrLite::OcrLite(int numOfThread) {
-    numThread = numOfThread;
+    dbNet.setNumThread(numOfThread);
+    angleNet.setNumThread(numOfThread);
+    crnnNet.setNumThread(numOfThread);
 }
 
 OcrLite::~OcrLite() {
@@ -29,32 +31,14 @@ void OcrLite::initModels(const char *path) {
     Logger("=====Init Models=====\n");
     std::string pathStr = path;
 
-    //===session options===
-    // Sets the number of threads used to parallelize the execution within nodes
-    // A value of 0 means ORT will pick a default
-    //sessionOptions.SetIntraOpNumThreads(numThread);
-    //set OMP_NUM_THREADS=16
-
-    // Sets the number of threads used to parallelize the execution of the graph (across nodes)
-    // If sequential execution is enabled this value is ignored
-    // A value of 0 means ORT will pick a default
-    sessionOptions.SetInterOpNumThreads(numThread);
-
-    // Sets graph optimization level
-    // ORT_DISABLE_ALL -> To disable all optimizations
-    // ORT_ENABLE_BASIC -> To enable basic optimizations (Such as redundant node removals)
-    // ORT_ENABLE_EXTENDED -> To enable extended optimizations (Includes level 1 + more complex optimizations like node fusions)
-    // ORT_ENABLE_ALL -> To Enable All possible opitmizations
-    sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
-
     Logger("--- Init DbNet ---\n");
-    dbNet.initModel(pathStr, env, sessionOptions);
+    dbNet.initModel(pathStr);
 
     Logger("--- Init AngleNet ---\n");
-    angleNet.initModel(pathStr, env, sessionOptions);
+    angleNet.initModel(pathStr);
 
     Logger("--- Init CrnnNet ---\n");
-    crnnNet.initModel(pathStr, env, sessionOptions);
+    crnnNet.initModel(pathStr);
 
     Logger("Init Models Success!\n");
 }
@@ -102,16 +86,6 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     OcrResult result;
     result = detect(path, imgName, src, originRect, scale,
                     boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
-
-    /*double startTest = getCurrentTime();
-    int loopCount = 100;
-    for (int i = 0; i < loopCount; ++i) {
-        detect(path, imgName, src, originRect, scale,
-                        boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
-    }
-    double endTest = getCurrentTime();
-    printf("average time=%f\n", (endTest - startTest) / loopCount);*/
-
     return result;
 }
 

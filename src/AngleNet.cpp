@@ -2,16 +2,56 @@
 #include "OcrUtils.h"
 #include <numeric>
 
-AngleNet::~AngleNet() {
-    session.release();
+AngleNet::AngleNet() {
+    env = new Ort::Env(ORT_LOGGING_LEVEL_ERROR, "AngleNet");
+    sessionOptions = new Ort::SessionOptions();
 }
 
-bool AngleNet::initModel(std::string &pathStr, Ort::Env &env, Ort::SessionOptions &sessionOptions) {
+AngleNet::~AngleNet() {
+    for (int i = 0; i < inputNames.size(); ++i) {
+        free((void *) inputNames[i]);
+    }
+    inputNames.clear();
+    for (int i = 0; i < outputNames.size(); ++i) {
+        free((void *) outputNames[i]);
+    }
+    outputNames.clear();
+    session->release();
+    delete session;
+    sessionOptions->release();
+    delete sessionOptions;
+    env->release();
+    delete env;
+}
+
+void AngleNet::setNumThread(int numOfThread) {
+    numThread = numOfThread;
+    //===session options===
+    // Sets the number of threads used to parallelize the execution within nodes
+    // A value of 0 means ORT will pick a default
+    //sessionOptions.SetIntraOpNumThreads(numThread);
+    //set OMP_NUM_THREADS=16
+
+    // Sets the number of threads used to parallelize the execution of the graph (across nodes)
+    // If sequential execution is enabled this value is ignored
+    // A value of 0 means ORT will pick a default
+    sessionOptions->SetInterOpNumThreads(numThread);
+
+    // Sets graph optimization level
+    // ORT_DISABLE_ALL -> To disable all optimizations
+    // ORT_ENABLE_BASIC -> To enable basic optimizations (Such as redundant node removals)
+    // ORT_ENABLE_EXTENDED -> To enable extended optimizations (Includes level 1 + more complex optimizations like node fusions)
+    // ORT_ENABLE_ALL -> To Enable All possible opitmizations
+    sessionOptions->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+}
+
+bool AngleNet::initModel(std::string &pathStr) {
 #ifdef _WIN32
     std::wstring anglePath = strToWstr(pathStr + "/angle_net.onnx");
-    session = makeUnique<Ort::Session>(env, anglePath.c_str(), sessionOptions);
+    session = new Ort::Session(*env, anglePath.c_str(), *sessionOptions);
 #else
-    session = makeUnique<Ort::Session>(env, (pathStr + "/angle_net.onnx").c_str(), sessionOptions);
+    std::string fullPath = pathStr + "/angle_net.onnx";
+    session = new Ort::Session(*env, fullPath.c_str(), *sessionOptions);
 #endif
     inputNames = getInputNames(session);
     outputNames = getOutputNames(session);
@@ -67,7 +107,7 @@ std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const cha
     std::vector<Angle> angles(size);
     if (doAngle) {
 #ifdef __OPENMP__
-#pragma omp parallel for
+#pragma omp parallel for num_threads(numThread)
 #endif
         for (int i = 0; i < size; ++i) {
             double startAngle = getCurrentTime();

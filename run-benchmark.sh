@@ -16,10 +16,8 @@ echo "Setting the Number of Threads=$NUM_THREADS Using an OpenMP Environment Var
 set OMP_NUM_THREADS=$NUM_THREADS
 
 ##### run test on MacOS or Linux
-pushd build
-export LD_LIBRARY_PATH="../onnxruntime/linux:../onnxruntime/macos"
-./OcrLiteOnnx --models ../models --image ../../test_imgs/1.jpg \
---numThread $NUM_THREADS --padding 50 --imgResize 0 \
---boxScoreThresh 0.6 --boxThresh 0.3 --minArea 3 \
---unClipRatio 2.0 --doAngle 1 --mostAngle 1
+pushd cmake-build-debug
+export LD_LIBRARY_PATH="../onnxruntime-shared/linux:../onnxruntime-shared/macos"
+./benchmark --models ../models --image ../../test_imgs/1.jpg \
+--numThread $NUM_THREADS --loopCount 10
 popd
