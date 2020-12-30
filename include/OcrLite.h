@@ -10,9 +10,11 @@
 
 class OcrLite {
 public:
-    OcrLite(int numOfThread);
+    OcrLite();
 
     ~OcrLite();
+
+    void setNumThread(int numOfThread);
 
     void initLogger(bool isConsole, bool isPartImg, bool isResultImg);
 
@@ -38,7 +40,7 @@ private:
     CrnnNet crnnNet;
 
     std::vector<cv::Mat> getPartImages(cv::Mat &src, std::vector<TextBox> &textBoxes,
-                              const char *path, const char *imgName);
+                                       const char *path, const char *imgName);
 
     OcrResult detect(const char *path, const char *imgName,
                      cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,

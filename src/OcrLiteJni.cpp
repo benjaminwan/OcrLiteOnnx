@@ -8,6 +8,7 @@
 static OcrLite *ocrLite;
 
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved){
+    ocrLite = new OcrLite();
     return JNI_VERSION_1_4;
 }
 
@@ -62,7 +63,7 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_getVersion(JNIEnv *env, jobject thiz) 
 
 extern "C" JNIEXPORT jboolean JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_init(JNIEnv *env, jobject thiz, jint numThread) {
-    ocrLite = new OcrLite(numThread);
+    ocrLite->setNumThread(numThread);
     printf("numThread=%d\n", numThread);
     return JNI_TRUE;
 }
@@ -101,10 +102,6 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jstr
                                                  jfloat minArea, jfloat unClipRatio,
                                                  jboolean doAngle, jboolean mostAngle
 ) {
-#ifdef __LEAK_TRACER__
-    leaktracer::MemoryTrace::GetInstance().startMonitoringAllThreads();
-#endif
-
     char *inputStr = jstringToChar(env, input);
     std::string  argImgPath = std::string(inputStr);
     std::string  imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
@@ -114,19 +111,7 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jstr
                                        padding, reSize,
                                        boxScoreThresh, boxThresh, minArea,
                                        unClipRatio, doAngle, mostAngle);
-
 	free(inputStr);
-	
-#ifdef __LEAK_TRACER__
-    leaktracer::MemoryTrace::GetInstance().stopAllMonitoring();
-    std::ofstream oleaks;
-    oleaks.open("leaks.out", std::ios_base::out);
-    if (oleaks.is_open())
-        leaktracer::MemoryTrace::GetInstance().writeLeaks(oleaks);
-    else
-        std::cerr << "Failed to write to \"leaks.out\"\n";
-#endif
-
     return OcrResultUtils(env, result).getJObject();
 }
 #endif

@@ -93,7 +93,8 @@ int main(int argc, char **argv) {
     }
 
     omp_set_num_threads(numThread);
-    OcrLite ocrLite(numThread);
+    OcrLite ocrLite;
+    ocrLite.setNumThread(numThread);
     ocrLite.initLogger(
             false,//isOutputConsole
             false,//isOutputPartImg

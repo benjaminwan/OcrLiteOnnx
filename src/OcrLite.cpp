@@ -2,16 +2,18 @@
 #include "OcrUtils.h"
 #include <stdarg.h> //windows&linux
 
-OcrLite::OcrLite(int numOfThread) {
-    dbNet.setNumThread(numOfThread);
-    angleNet.setNumThread(numOfThread);
-    crnnNet.setNumThread(numOfThread);
-}
+OcrLite::OcrLite() {}
 
 OcrLite::~OcrLite() {
     if (isOutputResultTxt) {
         fclose(resultTxt);
     }
+}
+
+void OcrLite::setNumThread(int numOfThread) {
+    dbNet.setNumThread(numOfThread);
+    angleNet.setNumThread(numOfThread);
+    crnnNet.setNumThread(numOfThread);
 }
 
 void OcrLite::initLogger(bool isConsole, bool isPartImg, bool isResultImg) {
