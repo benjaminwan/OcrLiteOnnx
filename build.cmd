@@ -7,6 +7,7 @@ echo "编译环境：VS2017或VS2019，安装时，至少选中'使用C++的桌�
 echo "开始菜单打开'x64 Native Tools Command Prompt for VS 2019'或'适用于 VS2017 的 x64 本机工具'，并转到OcrLiteOnnx根目录"
 echo "运行'build.cmd'"
 echo.
+
 echo "========第二步：准备opencv和onnxruntime========"
 echo "可以选择从源码自行编译，scripts文件夹内有参考编译脚本。或者从以下地址下载编译好的。"
 echo "https://gitee.com/benjaminwan/ocr-lite-onnx/releases/v1.0"
@@ -22,6 +23,7 @@ echo ├── onnxruntime-static
 echo ├── opencv-shared
 echo ├── opencv-static
 echo.
+
 echo "========第三步：选择编译选项========"
 echo "请注意：项目默认使用Release库，除非您自行编译Debug版的Onnxruntime和Opencv，否则请不要选择Debug编译"
 echo "请输入编译选项并回车: 1)Release, 2)Debug:""
@@ -31,6 +33,7 @@ if %flag% == 1 (set BUILD_TYPE=Release)^
 else if %flag% == 2 (set BUILD_TYPE=Debug)^
 else (echo 输入错误！Input Error!)
 echo.
+
 echo "请输入OpenMP选项并回车: 1)启用OpenMP(Angle阶段和Crnn阶段多线程并行执行), 2)禁用OpenMP(Angle阶段和Crnn阶段单线程执行)"
 set BUILD_OPENMP=ON
 set /p flag=
@@ -38,6 +41,7 @@ if %flag% == 1 (set BUILD_OPENMP=ON)^
 else if %flag% == 2 (set BUILD_OPENMP=OFF)^
 else (echo 输入错误！Input Error!)
 echo.
+
 echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
 echo "使用静态库时，编译出来的可执行文件较大，但部署起来比较方便。"
 echo "使用动态库时，编译出来的可执行文件较小，但部署的时候记得把dll复制到可执行文件目录"
@@ -47,6 +51,7 @@ if %flag% == 1 (set BUILD_STATIC=ON)^
 else if %flag% == 2 (set BUILD_STATIC=OFF)^
 else (echo "输入错误！Input Error!")
 echo.
+
 echo "请注意：如果选择2)编译为JNI动态库时，如果要编译成x86可执行文件则必须安装x86版JDK，反之要编译成x64可执行文件则必须安装x64版JDK"
 echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库"
 set BUILD_LIB=OFF
