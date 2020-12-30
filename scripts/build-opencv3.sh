@@ -2,6 +2,8 @@
 # build opencv 3.4.x by benjaminwan
 
 function cmakeParams(){
+  mkdir -p "build-$1"
+  pushd "build-$1"
   cmake -DCMAKE_BUILD_TYPE=$1 -DCMAKE_CONFIGURATION_TYPES=$1\
   -DCMAKE_INSTALL_PREFIX=install \
   -DBUILD_DOCS=OFF \
@@ -28,27 +30,7 @@ function cmakeParams(){
   ..
   make -j $NUM_THREADS
   make install
-}
-
-### build Release
-function buildRelease(){
-mkdir -p build-Release
-pushd build-Release
-cmakeParams "Release"
-popd
-}
-
-### build Debug
-function buildDebug(){
-mkdir -p build-Debug
-pushd build-Debug
-cmakeParams "Debug"
-popd
-}
-
-function buildALL(){
-buildRelease
-buildDebug
+  popd
 }
 
 sysOS=`uname -s`
@@ -76,18 +58,16 @@ else
   echo -e "输入错误！Input Error!"
 fi
 
-echo "请选择编译选项并回车: 0)ALL, 1)Release，2)Debug"
-echo "Please Select Build Type: 0)ALL, 1)Release，2)Debug"
+echo "请选择编译选项并回车: 1)Release，2)Debug"
+echo "Please Select Build Type: 1)Release，2)Debug"
 read -t 30 -p "" BUILD_TYPE
 if [ $BUILD_TYPE == 0 ]; then
-    buildALL
+    cmakeParams "Release"
 elif [ $BUILD_TYPE == 1 ]; then
-    buildRelease
+    cmakeParams "Release"
 elif [ $BUILD_TYPE == 2 ]; then
-    buildDebug
+    cmakeParams "Debug"
 else
   echo -e "输入错误！Input Error!"
 fi
-
-
 

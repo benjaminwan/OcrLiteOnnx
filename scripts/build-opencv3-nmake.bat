@@ -13,39 +13,20 @@ else if %flag% == 1 (set BUILD_SHARED=ON)^
 else if %flag% == 2 (set BUILD_SHARED=OFF)^
 else (echo "输入错误！Input Error!")
 
-echo 请选择要生成的选项并回车: 0)ALL，1)Release，2)Debug:
-echo Please Select Build Type: 0)ALL，1)Release，2)Debug:
+echo 请选择要生成的选项并回车: 1)Release，2)Debug:
+echo Please Select Build Type: 1)Release，2)Debug:
+set BUILD_TYPE=Release
 set /p flag=
-if %flag% == 0 (call :buildALL)^
-else if %flag% == 1 (call :buildRelease)^
-else if %flag% == 2 (call :buildDebug)^
+if %flag% == 0 (set BUILD_TYPE=Release)^
+else if %flag% == 1 (set BUILD_TYPE=Release)^
+else if %flag% == 2 (set BUILD_TYPE=Debug)^
 else (echo "输入错误！Input Error!")
-GOTO:EOF
-
-:buildALL
-call :buildRelease
-call :buildDebug
-GOTO:EOF
-
-:buildRelease
-mkdir build-win-Release
-pushd build-win-Release
-call :cmakeParams "Release"
-nmake
-nmake install
-popd
-GOTO:EOF
-
-:buildDebug
-mkdir build-win-Debug
-pushd build-win-Debug
-call :cmakeParams "Debug"
-nmake
-nmake install
-popd
+call :cmakeParams %BUILD_TYPE%
 GOTO:EOF
 
 :cmakeParams
+mkdir "build-windows-%~1"
+pushd "build-windows-%~1"
 cmake -G "NMake Makefiles" ^
   -DCMAKE_BUILD_TYPE="%~1" -DCMAKE_CONFIGURATION_TYPES="%~1" ^
   -DBUILD_DOCS=OFF ^
@@ -70,4 +51,7 @@ cmake -G "NMake Makefiles" ^
   -DBUILD_opencv_dnn=OFF ^
   -DBUILD_opencv_world=ON ^
   ..
+nmake
+nmake install
+popd
 GOTO:EOF
