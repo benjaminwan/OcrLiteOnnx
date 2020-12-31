@@ -4,9 +4,11 @@ project(OcrLiteOnnx)
 option(OCR_LITE_STATIC "Use Static Librarys For Build" ON)
 option(OCR_LITE_LIB "OcrLite Jni Support" OFF)
 option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" ON)
+option(OCR_BENCHMARK "build benchmark" ON)
 #set(OCR_LITE_LIB ON)
 #set(OCR_LITE_OPENMP ON)
 #set(OCR_LITE_STATIC OFF)
+set(OCR_BENCHMARK ON)
 
 set(CMAKE_CXX_STANDARD 11)
 add_definitions(-DUNICODE -D_UNICODE)
@@ -106,7 +108,14 @@ if (OCR_LITE_LIB)
 else ()
     add_executable(OcrLiteOnnx ${OCR_COMPILE_CODE})
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
-    # benchmark
+endif ()
+
+if (OCR_LITE_OPENMP)
+    target_compile_definitions(OcrLiteOnnx PRIVATE __OPENMP__)
+endif ()
+
+# benchmark
+if (OCR_BENCHMARK AND NOT OCR_LITE_LIB)
     add_executable(benchmark benchmark/benchmark.cpp
             src/AngleNet.cpp
             src/clipper.cpp
@@ -116,9 +125,7 @@ else ()
             src/OcrLite.cpp
             src/OcrUtils.cpp)
     target_link_libraries(benchmark ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
+    if (OCR_LITE_OPENMP)
+        target_compile_definitions(benchmark PRIVATE __OPENMP__)
+    endif ()
 endif ()
-
-if (OCR_LITE_OPENMP)
-    target_compile_definitions(OcrLiteOnnx PRIVATE __OPENMP__)
-endif ()
-

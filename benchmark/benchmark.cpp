@@ -2,7 +2,6 @@
 #include <cstdio>
 #include <string>
 #include <OcrUtils.h>
-#include "version.h"
 #include "OcrLite.h"
 #include "getopt.h"
 
@@ -101,27 +100,32 @@ int main(int argc, char **argv) {
             false);//isOutputResultImg
 
     ocrLite.enableResultTxt(imgPath.c_str(), imgName.c_str());
-    ocrLite.Logger("=====Input Params=====\n");
-    ocrLite.Logger(
+    printf("=====Input Params=====\n");
+    printf(
             "numThread(%d),padding(%d),imgResize(%d),boxScoreThresh(%f),boxThresh(%f),minArea(%f),unClipRatio(%f),doAngle(%d),mostAngle(%d)\n",
             numThread, padding, imgResize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
 
     ocrLite.initModels(modelsDir.c_str());
-
-    ocrLite.detect(imgPath.c_str(), imgName.c_str(),
-                   padding, imgResize,
-                   boxScoreThresh, boxThresh, minArea,
-                   unClipRatio, doAngle, mostAngle);
-
-    double startTest = getCurrentTime();
+    printf("=====warmup=====\n");
+    OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
+                                      padding, imgResize,
+                                      boxScoreThresh, boxThresh, minArea,
+                                      unClipRatio, doAngle, mostAngle);
+    printf("dbNetTime(%f) detectTime(%f)\n", result.dbNetTime, result.detectTime);
+    double dbTime = 0.0f;
+    double detectTime = 0.0f;
     for (int i = 0; i < loopCount; ++i) {
         printf("=====loop:%d=====\n", i + 1);
-        ocrLite.detect(imgPath.c_str(), imgName.c_str(),
-                       padding, imgResize,
-                       boxScoreThresh, boxThresh, minArea,
-                       unClipRatio, doAngle, mostAngle);
+        OcrResult ocrResult = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
+                                             padding, imgResize,
+                                             boxScoreThresh, boxThresh, minArea,
+                                             unClipRatio, doAngle, mostAngle);
+        printf("dbNetTime(%f) detectTime(%f)\n", ocrResult.dbNetTime, ocrResult.detectTime);
+        dbTime += ocrResult.dbNetTime;
+        detectTime += ocrResult.detectTime;
     }
-    double endTest = getCurrentTime();
-    printf("loopCount=%d, average time=%fms\n", loopCount, (endTest - startTest) / loopCount);
+    printf("=====result=====\n");
+    printf("average dbNetTime=%fms, average detectTime=%fms\n", dbTime / loopCount,
+           detectTime / loopCount);
     return 0;
 }
