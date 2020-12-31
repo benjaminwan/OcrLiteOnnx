@@ -7,12 +7,14 @@
 
 static OcrLite *ocrLite;
 
-JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved){
+JNIEXPORT jint JNICALL
+JNI_OnLoad(JavaVM *vm, void *reserved){
     ocrLite = new OcrLite();
     return JNI_VERSION_1_4;
 }
 
-JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved){
+JNIEXPORT void JNICALL
+JNI_OnUnload(JavaVM *vm, void *reserved){
     //printf("JNI_OnUnload\n");
 	free(ocrLite);
 }
