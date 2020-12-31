@@ -53,7 +53,7 @@ else
   echo -e "输入错误！Input Error!"
 fi
 
-echo "请注意：如果选择2)编译为JNI动态库时，Linux或Mac必须安装配置64位版JDK。"
+echo "请注意：如果选择2)编译为JNI动态库时，必须安装配置Oracle JDK"
 echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库"
 read -p "" OUTPUT_LIB
 if [ $OUTPUT_LIB == 1 ]; then

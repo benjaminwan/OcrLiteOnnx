@@ -11,7 +11,7 @@ set OMP_NUM_THREADS=%NUMBER_OF_PROCESSORS%
 :: copy opencv\build\x64\vc14\bin\opencv_world3411.dll build-win /Y
 pushd build
 benchmark.exe --models ../models --image ../../test_imgs/1.jpg ^
-                --numThread $NUM_THREADS --loopCount 10
+                --numThread %NUMBER_OF_PROCESSORS% --loopCount 10
 popd
 PAUSE
 @ENDLOCAL
