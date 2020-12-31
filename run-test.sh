@@ -17,7 +17,6 @@ set OMP_NUM_THREADS=$NUM_THREADS
 
 ##### run test on MacOS or Linux
 pushd build
-export LD_LIBRARY_PATH="../onnxruntime/linux:../onnxruntime/macos"
 ./OcrLiteOnnx --models ../models --image ../../test_imgs/1.jpg \
 --numThread $NUM_THREADS --padding 50 --imgResize 0 \
 --boxScoreThresh 0.6 --boxThresh 0.3 --minArea 3 \

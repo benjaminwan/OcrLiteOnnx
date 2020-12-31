@@ -17,7 +17,6 @@ set OMP_NUM_THREADS=$NUM_THREADS
 
 ##### run test on MacOS or Linux
 pushd cmake-build-debug
-export LD_LIBRARY_PATH="../onnxruntime-shared/linux:../onnxruntime-shared/macos"
 ./benchmark --models ../models --image ../../test_imgs/1.jpg \
 --numThread $NUM_THREADS --loopCount 10
 popd
