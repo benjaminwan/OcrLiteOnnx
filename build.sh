@@ -41,9 +41,9 @@ else
   echo -e "输入错误！Input Error!"
 fi
 
-echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
 echo "使用静态库时，编译出来的可执行文件较大，但部署起来比较方便。"
 echo "使用动态库时，编译出来的可执行文件较小，但Linux部署时要配置LD_LIBRARY_PATH或复制到/usr/lib。"
+echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
 read -p "" BUILD_STATIC
 if [ $BUILD_STATIC == 1 ]; then
     BUILD_STATIC=ON
