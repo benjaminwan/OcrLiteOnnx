@@ -7,14 +7,6 @@ DbNet::DbNet() {
 }
 
 DbNet::~DbNet() {
-    for (int i = 0; i < inputNames.size(); ++i) {
-        free((void *) inputNames[i]);
-    }
-    inputNames.clear();
-    for (int i = 0; i < outputNames.size(); ++i) {
-        free((void *) outputNames[i]);
-    }
-    outputNames.clear();
     session->release();
     delete session;
     sessionOptions->release();
