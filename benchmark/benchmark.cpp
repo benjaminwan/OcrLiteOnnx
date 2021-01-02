@@ -57,8 +57,8 @@ int main(int argc, char **argv) {
     float unClipRatio = 2.0f;
     bool doAngle = true;
     int flagDoAngle = 1;
-    bool mostAngle = false;
-    int flagMostAngle = 0;
+    bool mostAngle = true;
+    int flagMostAngle = 1;
 
     int opt;
     int optionIndex = 0;
