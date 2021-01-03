@@ -47,11 +47,10 @@ OcrLiteOnnx
 3. Linux Ubuntu 1604
 
 ### Windows编译说明
-
 #### Windows nmake编译
 1.  安装VS2017或VS2019，安装时，至少选中'使用C++的桌面开发'
 2.  cmake请自行下载&配置，[下载地址](https://cmake.org/download/)
-3.  开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到OcrLiteOnnx根目录
+3.  开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到本项目根目录
 4.  运行```build.cmd```并按照提示输入选项，最后选择'编译成可执行文件'
 5.  编译完成后运行```run-test.cmd```进行测试
 6. 编译JNI动态运行库(可选，可用于java调用)
@@ -59,11 +58,11 @@ OcrLiteOnnx
 * 新建“系统变量”，变量名```JAVA_HOME``` ，变量值```C:\Program Files\Java\jdk1.8.0_221``
 * 新建“系统变量”，变量名```CLASSPATH``` ，变量值```.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar;``
 * 编辑“系统变量”Path，Win7在变量值头部添加```%JAVA_HOME%\bin;``` ，win10直接添加一行```%JAVA_HOME%\bin```
-* 开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到OcrLiteOnnx根目录
+* 开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到本项目根目录
 * 运行```build.cmd```并按照提示输入选项，最后选择'编译成JNI动态库'
 
 #### Windows Visual Studio编译说明
-1. VS2017/VS2019，cmake，opencv, onnxruntime……等安装配置参考上述步骤。
+1. VS2017/VS2019，cmake……等安装配置参考上述步骤。
 2. 运行generate-vs-project.cmd，输入数字选择要生成的visual studio项目解决方案版本。
 3. 根据你的编译环境，进入build-xxxx-x86或x64文件夹，打开OcrLiteOnnx.sln。
 4. 在顶部工具栏选择Release，在右边的"解决方案"窗口，右键选中"ALL_BUILD"->生成。要选择Debug，则您必须自行编译Debug版的opencv或onnxruntime。
@@ -85,7 +84,12 @@ OcrLiteOnnx
 * 编辑用户目录下的隐藏文件```.zshrc``` ，添加```export JAVA_HOME=$(/usr/libexec/java_home)```
 * 运行```build.sh```并按照提示输入选项，最后选择'编译成JNI动态库'
 
-##### Linux编译说明
+#### macOS部署说明
+opencv或onnxruntime使用动态库时，参考下列方法：
+* 把动态库所在路径加入DYLD_LIBRARY_PATH搜索路径
+* 把动态库复制或链接到到/usr/lib
+
+### Linux编译说明
 1. Ubuntu16.04 LTS 或其它发行版
 2. ```sudo apt-get install build-essential```
 3. g++版本要求5以上，cmake 3.1要求以上[下载地址](https://cmake.org/download/)
@@ -95,7 +99,12 @@ OcrLiteOnnx
 * 下载jdk-8u221并安装配置
 * 运行```build.sh```并按照提示输入选项，最后选择'编译成JNI动态库'
 
-#### 输入参数说明
+#### Linux部署说明
+opencv或onnxruntime使用动态库时，参考下列方法：
+* 把动态库所在路径加入LD_LIBRARY_PATH搜索路径
+* 把动态库复制或链接到到/usr/lib
+
+### 输入参数说明
 * 请参考main.h中的命令行参数说明。
 * 每个参数有一个短参数名和一个长参数名，用短的或长的均可。
 1. ```-d或--models```：模型所在文件夹路径，可以相对路径也可以绝对路径。
