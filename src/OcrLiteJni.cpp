@@ -16,7 +16,7 @@ JNI_OnLoad(JavaVM *vm, void *reserved){
 JNIEXPORT void JNICALL
 JNI_OnUnload(JavaVM *vm, void *reserved){
     //printf("JNI_OnUnload\n");
-	free(ocrLite);
+	delete ocrLite;
 }
 
 #ifdef _WIN32
