@@ -64,7 +64,7 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_getVersion(JNIEnv *env, jobject thiz) 
 }
 
 extern "C" JNIEXPORT jboolean JNICALL
-Java_com_benjaminwan_ocrlibrary_OcrEngine_init(JNIEnv *env, jobject thiz, jint numThread) {
+Java_com_benjaminwan_ocrlibrary_OcrEngine_setNumThread(JNIEnv *env, jobject thiz, jint numThread) {
     ocrLite->setNumThread(numThread);
     printf("numThread=%d\n", numThread);
     return JNI_TRUE;
