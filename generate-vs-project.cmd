@@ -3,35 +3,44 @@ chcp 65001
 cls
 @SETLOCAL
 
-echo 请注意：项目默认使用Release库，请您打开项目后选择Release(除非您自行编译Debug版的Onnxruntime和Opencv)
+echo "请注意：项目默认使用Release库，除非您自行编译Debug版的Onnxruntime和Opencv，否则请不要选择Debug编译"
+echo "请输入编译选项并回车: 1)Release, 2)Debug:""
+set BUILD_TYPE=Release
+set /p flag=
+if %flag% == 1 (set BUILD_TYPE=Release)^
+else if %flag% == 2 (set BUILD_TYPE=Debug)^
+else (echo 输入错误！Input Error!)
+echo.
 
-echo 请输入OpenMP选项并回车: 1)启用OpenMP, 2)禁用OpenMP:
-echo Please Select OpenMP Option: 1)Enable OpenMP, 2)Disable OpenMP:
+echo "请输入OpenMP选项并回车: 1)启用OpenMP(Angle阶段和Crnn阶段多线程并行执行), 2)禁用OpenMP(Angle阶段和Crnn阶段单线程执行)"
 set BUILD_OPENMP=ON
 set /p flag=
 if %flag% == 1 (set BUILD_OPENMP=ON)^
 else if %flag% == 2 (set BUILD_OPENMP=OFF)^
-else (echo "输入错误！Input Error!")
+else (echo 输入错误！Input Error!)
+echo.
 
-echo 请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库:
-echo Please Select OnnxRuntime And Opencv Lib Type: 1)Static，2)Shared:
+echo "使用静态库时，编译出来的可执行文件较大，但部署起来比较方便。"
+echo "使用动态库时，编译出来的可执行文件较小，但部署的时候记得把dll复制到可执行文件目录"
+echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
 set BUILD_STATIC=ON
 set /p flag=
 if %flag% == 1 (set BUILD_STATIC=ON)^
 else if %flag% == 2 (set BUILD_STATIC=OFF)^
 else (echo "输入错误！Input Error!")
+echo.
 
-echo 请选择编译输出类型并回车: 1)编译可执行文件，2)编译动态库:
-echo Please Select Build Type: 1)Executable，2)Dynamic Library:
+
+echo "请注意：如果选择2)编译为JNI动态库时，必须安装配置Oracle JDK"
+echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库"
 set BUILD_LIB=OFF
 set /p flag=
 if %flag% == 1 (set BUILD_LIB=OFF)^
 else if %flag% == 2 (set BUILD_LIB=ON)^
-else (echo "输入错误！Input Error!")
+else (echo 输入错误！Input Error!)
+echo.
 
-echo 请注意：如果要编译为JNI Lib，则必须与本机安装的JDK(x86/x64)对应
-echo 请输入选项并回车: 0)ALL, 1)vs2017-x86, 2)vs2017-x64, 3)vs2019-x86, 4)vs2019-x64:
-echo Please Input VS Version: 0)ALL, 1)vs2017-x86, 2)vs2017-x64, 3)vs2019-x86, 4)vs2019-x64:
+echo "请输入选项并回车: 0)ALL, 1)vs2017-x86, 2)vs2017-x64, 3)vs2019-x86, 4)vs2019-x64:"
 set /p flag=
 if %flag% == 0 (call :buildALL)^
 else if %flag% == 1 (call :gen2017-x86)^
