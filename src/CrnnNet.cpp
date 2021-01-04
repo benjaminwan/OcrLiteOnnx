@@ -3,18 +3,10 @@
 #include <fstream>
 #include <numeric>
 
-CrnnNet::CrnnNet() {
-    env = new Ort::Env(ORT_LOGGING_LEVEL_ERROR, "CrnnNet");
-    sessionOptions = new Ort::SessionOptions();
-}
+CrnnNet::CrnnNet() {}
 
 CrnnNet::~CrnnNet() {
-    session->release();
     delete session;
-    sessionOptions->release();
-    delete sessionOptions;
-    env->release();
-    delete env;
 }
 
 void CrnnNet::setNumThread(int numOfThread) {
@@ -28,23 +20,23 @@ void CrnnNet::setNumThread(int numOfThread) {
     // Sets the number of threads used to parallelize the execution of the graph (across nodes)
     // If sequential execution is enabled this value is ignored
     // A value of 0 means ORT will pick a default
-    sessionOptions->SetInterOpNumThreads(numThread);
+    sessionOptions.SetInterOpNumThreads(numThread);
 
     // Sets graph optimization level
     // ORT_DISABLE_ALL -> To disable all optimizations
     // ORT_ENABLE_BASIC -> To enable basic optimizations (Such as redundant node removals)
     // ORT_ENABLE_EXTENDED -> To enable extended optimizations (Includes level 1 + more complex optimizations like node fusions)
     // ORT_ENABLE_ALL -> To Enable All possible opitmizations
-    sessionOptions->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+    sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 }
 
 bool CrnnNet::initModel(std::string &pathStr) {
 #ifdef _WIN32
     std::wstring crnnPath = strToWstr(pathStr + "/crnn_lite_lstm.onnx");
-    session = new Ort::Session(*env, crnnPath.c_str(), *sessionOptions);
+    session = new Ort::Session(env, crnnPath.c_str(), sessionOptions);
 #else
     std::string fullPath = pathStr + "/crnn_lite_lstm.onnx";
-    session = new Ort::Session(*env, fullPath.c_str(), *sessionOptions);
+    session = new Ort::Session(env, fullPath.c_str(), sessionOptions);
 #endif
     //inputNames = getInputNames(session);
     //outputNames = getOutputNames(session);
@@ -119,7 +111,7 @@ TextLine CrnnNet::getTextLine(cv::Mat &src) {
 
     std::array<int64_t, 4> inputShape{1, srcResize.channels(), srcResize.rows, srcResize.cols};
 
-    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
 
 
     Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),

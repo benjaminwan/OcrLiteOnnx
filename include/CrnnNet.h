@@ -21,8 +21,8 @@ public:
 private:
     bool isOutputDebugImg = false;
     Ort::Session *session;
-    Ort::Env *env;
-    Ort::SessionOptions *sessionOptions;
+    Ort::Env env = Ort::Env(ORT_LOGGING_LEVEL_ERROR, "CrnnNet");
+    Ort::SessionOptions sessionOptions = Ort::SessionOptions();
     int numThread = 0;
     //std::vector<const char *> inputNames;
     //std::vector<const char *> outputNames;

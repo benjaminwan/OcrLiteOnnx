@@ -22,8 +22,8 @@ private:
     bool isOutputAngleImg = false;
 
     Ort::Session *session;
-    Ort::Env *env;
-    Ort::SessionOptions *sessionOptions;
+    Ort::Env env = Ort::Env(ORT_LOGGING_LEVEL_ERROR, "AngleNet");
+    Ort::SessionOptions sessionOptions = Ort::SessionOptions();
     int numThread = 0;
 
     //std::vector<const char *> inputNames;

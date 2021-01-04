@@ -2,18 +2,10 @@
 #include "OcrUtils.h"
 #include <numeric>
 
-AngleNet::AngleNet() {
-    env = new Ort::Env(ORT_LOGGING_LEVEL_ERROR, "AngleNet");
-    sessionOptions = new Ort::SessionOptions();
-}
+AngleNet::AngleNet() {}
 
 AngleNet::~AngleNet() {
-    session->release();
     delete session;
-    sessionOptions->release();
-    delete sessionOptions;
-    env->release();
-    delete env;
 }
 
 void AngleNet::setNumThread(int numOfThread) {
@@ -27,23 +19,23 @@ void AngleNet::setNumThread(int numOfThread) {
     // Sets the number of threads used to parallelize the execution of the graph (across nodes)
     // If sequential execution is enabled this value is ignored
     // A value of 0 means ORT will pick a default
-    sessionOptions->SetInterOpNumThreads(numThread);
+    sessionOptions.SetInterOpNumThreads(numThread);
 
     // Sets graph optimization level
     // ORT_DISABLE_ALL -> To disable all optimizations
     // ORT_ENABLE_BASIC -> To enable basic optimizations (Such as redundant node removals)
     // ORT_ENABLE_EXTENDED -> To enable extended optimizations (Includes level 1 + more complex optimizations like node fusions)
     // ORT_ENABLE_ALL -> To Enable All possible opitmizations
-    sessionOptions->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+    sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 }
 
 bool AngleNet::initModel(std::string &pathStr) {
 #ifdef _WIN32
     std::wstring anglePath = strToWstr(pathStr + "/angle_net.onnx");
-    session = new Ort::Session(*env, anglePath.c_str(), *sessionOptions);
+    session = new Ort::Session(env, anglePath.c_str(), sessionOptions);
 #else
     std::string fullPath = pathStr + "/angle_net.onnx";
-    session = new Ort::Session(*env, fullPath.c_str(), *sessionOptions);
+    session = new Ort::Session(env, fullPath.c_str(), sessionOptions);
 #endif
     //inputNames = getInputNames(session);
     //outputNames = getOutputNames(session);
@@ -70,7 +62,7 @@ Angle AngleNet::getAngle(cv::Mat &src) {
 
     std::array<int64_t, 4> inputShape{1, src.channels(), src.rows, src.cols};
 
-    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
 
     Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
                                                              inputTensorValues.size(), inputShape.data(),
