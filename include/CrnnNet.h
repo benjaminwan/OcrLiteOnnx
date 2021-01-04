@@ -24,8 +24,10 @@ private:
     Ort::Env *env;
     Ort::SessionOptions *sessionOptions;
     int numThread = 0;
-    std::vector<const char *> inputNames;
-    std::vector<const char *> outputNames;
+    //std::vector<const char *> inputNames;
+    //std::vector<const char *> outputNames;
+    const char *inputNames[1] = {"input"};
+    const char *outputNames[1] = {"out"};
 
     const float meanValues[3] = {127.5, 127.5, 127.5};
     const float normValues[3] = {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5};

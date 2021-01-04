@@ -44,8 +44,8 @@ bool DbNet::initModel(std::string &pathStr) {
     std::string fullPath = pathStr + "/dbnet.onnx";
     session = new Ort::Session(*env, fullPath.c_str(), *sessionOptions);
 #endif
-    inputNames = getInputNames(session);
-    outputNames = getOutputNames(session);
+    //inputNames = getInputNames(session);
+    //outputNames = getOutputNames(session);
     return true;
 }
 
@@ -65,9 +65,8 @@ DbNet::getTextBoxes(cv::Mat &src, ScaleParam &s,
                                                              inputShape.size());
     assert(inputTensor.IsTensor());
 
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
-                                     inputNames.size(),
-                                     outputNames.data(), outputNames.size());
+    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames, &inputTensor,
+                                     1, outputNames, 1);
 
     assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
 
