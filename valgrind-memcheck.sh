@@ -13,7 +13,7 @@ NUM_THREADS=1
 set OMP_NUM_THREADS=$NUM_THREADS
 
 ##### run test on MacOS or Linux
-pushd cmake-build-debug
+pushd build
 valgrind --tool=memcheck --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no --log-file=valgrind-memcheck.txt \
 ./OcrLiteOnnx --models ../models --image ../../test_imgs/1.jpg \
 --numThread $NUM_THREADS --padding 50 --imgResize 0 \
