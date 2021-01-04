@@ -128,3 +128,8 @@ build.sh编译参数：
 
 ### 编译脚本说明
 * scripts文件夹内有一些脚本，用于自行编译opencv和onnxruntime。
+
+### 关于内存泄漏与valgrind
+* 项目根目录的valgrind-memcheck.sh用来检查内存泄漏(需要debug编译)。
+* valgrind-memcheck.txt是当前demo在linux平台的检查报告。
+* 报告中"possibly lost"有37个，均发生在第三方库opencv，possibly lost可能不一定是泄露，暂时不管。
