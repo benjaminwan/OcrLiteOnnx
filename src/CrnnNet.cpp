@@ -7,6 +7,12 @@ CrnnNet::CrnnNet() {}
 
 CrnnNet::~CrnnNet() {
     delete session;
+    for (auto name : inputNames) {
+        free(name);
+    }
+    for (auto name : outputNames) {
+        free(name);
+    }
 }
 
 void CrnnNet::setNumThread(int numOfThread) {
@@ -38,8 +44,8 @@ bool CrnnNet::initModel(std::string &pathStr) {
     std::string fullPath = pathStr + "/crnn_lite_lstm.onnx";
     session = new Ort::Session(env, fullPath.c_str(), sessionOptions);
 #endif
-    //inputNames = getInputNames(session);
-    //outputNames = getOutputNames(session);
+    inputNames = getInputNames(session);
+    outputNames = getOutputNames(session);
 
     //load keys
     std::ifstream in((pathStr + "/keys.txt").c_str());
@@ -119,8 +125,8 @@ TextLine CrnnNet::getTextLine(cv::Mat &src) {
                                                              inputShape.size());
     assert(inputTensor.IsTensor());
 
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames, &inputTensor,
-                                     1, outputNames, 1);
+    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
+                                     inputNames.size(), outputNames.data(), outputNames.size());
 
     assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
 

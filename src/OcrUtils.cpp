@@ -340,18 +340,18 @@ std::vector<int> getAngleIndexes(std::vector<Angle> &angles) {
     return angleIndexes;
 }
 
-std::vector<const char *> getInputNames(Ort::Session *session) {
+std::vector<char *> getInputNames(Ort::Session *session) {
     Ort::AllocatorWithDefaultOptions allocator;
     size_t numInputNodes = session->GetInputCount();
-    std::vector<const char *> inputNodeNames(numInputNodes);
+    std::vector<char *> inputNodeNames(numInputNodes);
     //std::vector<int64_t> inputNodeDims;
 
     //printf("Number of inputs = %zu\n", numInputNodes);
 
     for (int i = 0; i < numInputNodes; i++) {
         // print input node names
-        const char *inputName = session->GetInputName(i, allocator);
-        //printf("Input %d : name=%s\n", i, inputName);
+        char *inputName = session->GetInputName(i, allocator);
+        printf("InputName[%d]=%s\n", i, inputName);
         inputNodeNames[i] = inputName;
 
         // print input node types
@@ -370,18 +370,18 @@ std::vector<const char *> getInputNames(Ort::Session *session) {
     return inputNodeNames;
 }
 
-std::vector<const char *> getOutputNames(Ort::Session *session) {
+std::vector<char *> getOutputNames(Ort::Session *session) {
     Ort::AllocatorWithDefaultOptions allocator;
     size_t numOutputNodes = session->GetOutputCount();
-    std::vector<const char *> outputNodeNames(numOutputNodes);
+    std::vector<char *> outputNodeNames(numOutputNodes);
     //std::vector<int64_t> outputNodeDims;
 
     //printf("Number of outputs = %zu\n", numOutputNodes);
 
     for (int i = 0; i < numOutputNodes; i++) {
         // print input node names
-        const char *outputName = session->GetOutputName(i, allocator);
-        //printf("Output %d : name=%s\n", i, outputName);
+        char *outputName = session->GetOutputName(i, allocator);
+        printf("OutputName[%d]=%s\n", i, outputName);
         outputNodeNames[i] = outputName;
 
         // print input node types

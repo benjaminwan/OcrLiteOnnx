@@ -69,9 +69,9 @@ std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, c
 
 std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
 
-std::vector<const char *> getInputNames(Ort::Session *session);
+std::vector<char *> getInputNames(Ort::Session *session);
 
-std::vector<const char *> getOutputNames(Ort::Session *session);
+std::vector<char *> getOutputNames(Ort::Session *session);
 
 int getMostProbabilityAngleIndex(std::vector<int> &input, double mean, double stdev);
 
