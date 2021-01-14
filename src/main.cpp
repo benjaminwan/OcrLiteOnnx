@@ -1,6 +1,5 @@
 #include <omp.h>
 #include <cstdio>
-#include <string>
 #include "main.h"
 #include "version.h"
 #include "OcrLite.h"
@@ -30,7 +29,7 @@ int main(int argc, char **argv) {
     int numThread = 4;
     int padding = 50;
     int maxSideLen = 1024;
-    float boxScoreThresh = 0.5f;
+    float boxScoreThresh = 0.6f;
     float boxThresh = 0.3f;
     float unClipRatio = 2.0f;
     bool doAngle = true;

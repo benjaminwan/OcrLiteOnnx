@@ -22,6 +22,7 @@ exit
 fi
 
 ##### run test on MacOS or Linux
+./build/OcrLiteOnnx --version
 ./build/OcrLiteOnnx --models models \
 --det dbnet.onnx \
 --cls angle_net.onnx \

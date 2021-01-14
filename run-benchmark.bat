@@ -16,6 +16,7 @@ exit
 )
 
 :: run Windows
+build\benchmark.exe --version
 build\benchmark.exe --models models ^
 --det dbnet.onnx ^
 --cls angle_net.onnx ^

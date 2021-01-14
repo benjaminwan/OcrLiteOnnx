@@ -13,6 +13,7 @@ exit
 )
 
 :: run Windows
+build\OcrLiteOnnx.exe --version
 build\OcrLiteOnnx.exe --models models ^
 --det dbnet.onnx ^
 --cls angle_net.onnx ^

@@ -25,6 +25,7 @@ exit
 fi
 
 ##### run test on MacOS or Linux
+./build/benchmark --version
 ./build/benchmark --models models \
 --det dbnet.onnx \
 --cls angle_net.onnx \
