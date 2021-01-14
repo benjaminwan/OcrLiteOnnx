@@ -13,10 +13,10 @@ public:
 
     void setNumThread(int numOfThread);
 
-    bool initModel(std::string &pathStr);
+    void initModel(const std::string &pathStr);
 
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s, float boxScoreThresh,
-                                      float boxThresh, float minArea, float unClipRatio);
+                                      float boxThresh, float unClipRatio);
 
 private:
     Ort::Session *session;
@@ -25,11 +25,9 @@ private:
     int numThread = 0;
     std::vector<char *> inputNames;
     std::vector<char *> outputNames;
-    //const char *inputNames[1] = {"input0"};
-    //const char *outputNames[1] = {"out1"};
 
-    const float meanValues[3] = {0.485 * 255, 0.456 * 255, 0.406 * 255};
-    const float normValues[3] = {1.0 / 0.229 / 255.0, 1.0 / 0.224 / 255.0, 1.0 / 0.225 / 255.0};
+    const float meanValues[3] = {0.485f * 255, 0.456f * 255, 0.406f * 255};
+    const float normValues[3] = {1.0 / 0.229f / 255.0, 1.0 / 0.224f / 255.0, 1.0 / 0.225f / 255.0};
 };
 
 
