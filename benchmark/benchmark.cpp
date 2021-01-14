@@ -1,6 +1,5 @@
 #include <omp.h>
 #include <cstdio>
-#include <string>
 #include "main.h"
 #include "version.h"
 #include "OcrLite.h"

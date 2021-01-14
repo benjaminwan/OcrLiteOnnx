@@ -1,3 +1,4 @@
+#ifndef __JNI__
 #include <omp.h>
 #include <cstdio>
 #include "main.h"
@@ -178,3 +179,5 @@ int main(int argc, char **argv) {
     ocrLite.Logger("%s\n", result.strRes.c_str());
     return 0;
 }
+
+#endif
