@@ -40,10 +40,11 @@ OcrLiteOnnx/models
 
 * OpenCv动态库：opencv-(版本号)-sharedLib.7z
 * OpenCv静态库：opencv-(版本号)-staticLib.7z
-* OnnxRuntime动态库：onnxruntime-(版本号)-sharedLib.7z
-* OnnxRuntime静态库：onnxruntime-(版本号)-staticLib.7z
+* OnnxRuntime动态库：onnxruntime-(版本号)-shared.7z
+* OnnxRuntime静态库：onnxruntime-(版本号)-static.7z
 * 可以选择只下载两者的动态库或两者的静态库(要么都是静态库要么都是动态库)，或者4种全部下载
 * 把压缩包解压到项目根目录，解压后目录结构
+* 注意：从v1.5.2开始，切换到OnnxRuntime 1.7.0
 
 ```
 OcrLiteOnnx
@@ -62,6 +63,8 @@ OcrLiteOnnx
 **注意：以下说明仅适用于本机编译。如果需要交叉编译为arm等其它平台(参考android)，则需要先交叉编译所有第三方依赖库(onnxruntime、opencv)，然后再把依赖库整合替换到本项目里。**
 
 ### Windows编译说明
+
+#### 注意:从v1.5.2开始，切换到OnnxRuntime 1.7.0 ，并只支持vs2019编译环境
 
 #### Windows nmake编译
 

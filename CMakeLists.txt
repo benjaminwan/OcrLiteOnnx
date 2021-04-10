@@ -48,9 +48,9 @@ endif ()
 
 # OnnxRuntime
 if (OCR_STATIC)
-    set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-static")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-static/OnnxRuntimeWrapper.cmake)
 else ()
-    set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-shared")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-shared/OnnxRuntimeWrapper.cmake)
 endif ()
 find_package(OnnxRuntime REQUIRED)
 if (OnnxRuntime_FOUND)

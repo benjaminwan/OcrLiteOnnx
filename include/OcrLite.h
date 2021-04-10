@@ -2,7 +2,7 @@
 #define __OCR_LITE_H__
 
 #include "opencv2/core.hpp"
-#include "onnxruntime_cxx_api.h"
+#include <onnxruntime/core/session/onnxruntime_cxx_api.h>
 #include "OcrStruct.h"
 #include "DbNet.h"
 #include "AngleNet.h"
