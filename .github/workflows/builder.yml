@@ -153,7 +153,7 @@ jobs:
       ONNX_VERSION: 1.9.0
       ONNX_PKG_NAME: onnxruntime-1.9.0-vs2019-static
       CV_VERSION: 4.5.4
-      CV_PKG_NAME: opencv-4.5.4-windows-vs2019
+      CV_PKG_NAME: opencv-4.5.4-windows-vs2017
 
     steps:
       # 检出代码
