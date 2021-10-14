@@ -137,7 +137,9 @@ build/
 build-lib/
 /models/*.onnx
 onnxruntime-shared/
-onnxruntime-static/
+onnxruntime-static/*
+!/onnxruntime-static/OnnxRuntimeWrapper.cmake
 opencv-static/*
 !/opencv-static/OpenCVWrapperConfig.cmake
 opencv-shared/
+/images/*-result.*
