@@ -96,7 +96,7 @@ jobs:
       - name: download onnxruntime-static
         run: |
           cd onnxruntime-static
-          wget https://github.com/benjaminwan/NcnnBuilder/releases/download/${{ env.ONNX_VERSION }}/${{ env.ONNX_PKG_NAME }}.7z -O ${{ env.ONNX_PKG_NAME }}.7z
+          wget https://github.com/RapidAI/OnnxruntimeBuilder/releases/download/${{ env.ONNX_VERSION }}/${{ env.ONNX_PKG_NAME }}.7z -O ${{ env.ONNX_PKG_NAME }}.7z
           7z x ${{ env.ONNX_PKG_NAME }}.7z -aoa
 
       # 下载opencv-static
@@ -163,7 +163,7 @@ jobs:
       - name: download onnxruntime-static
         run: |
           cd onnxruntime-static
-          Invoke-WebRequest -Uri https://github.com/benjaminwan/NcnnBuilder/releases/download/${{ env.ONNX_VERSION }}/${{ env.ONNX_PKG_NAME }}.7z -OutFile ${{ env.ONNX_PKG_NAME }}.7z
+          Invoke-WebRequest -Uri https://github.com/RapidAI/OnnxruntimeBuilder/releases/download/${{ env.ONNX_VERSION }}/${{ env.ONNX_PKG_NAME }}.7z -OutFile ${{ env.ONNX_PKG_NAME }}.7z
           7z x ${{ env.ONNX_PKG_NAME }}.7z -aoa
 
       # 下载opencv-static
