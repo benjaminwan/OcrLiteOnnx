@@ -66,7 +66,7 @@ OcrLiteNcnn/onnxruntime-static
 
 #### Windows Visual Studio编译说明
 
-1. VS2017/VS2019，cmake……等安装配置参考上述步骤。
+1. VS2019，cmake……等安装配置参考上述步骤。
 2. 运行generate-vs-project.bat，输入数字选择要生成的visual studio项目解决方案版本。
 3. 根据你的编译环境，进入build-xxxx-x86或x64文件夹，打开OcrLiteNcnn.sln。
 4. 在顶部工具栏选择Release，在右边的"解决方案"窗口，右键选中"ALL_BUILD"->生成。要选择Debug，则您必须自行编译Debug版的opencv或ncnn。
