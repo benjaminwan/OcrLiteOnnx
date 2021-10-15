@@ -50,7 +50,7 @@ OcrLiteNcnn/onnxruntime-static
 
 #### Windows nmake编译
 
-1. 安装VS2017或VS2019，安装时，至少选中'使用C++的桌面开发'
+1. 安装VS2019，安装时，至少选中'使用C++的桌面开发'
 2. cmake>=3.12请自行下载&配置，[下载地址](https://cmake.org/download/)
 3. 开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到本项目根目录
 4. 运行```build.bat```并按照提示输入选项，最后选择'编译成可执行文件'
