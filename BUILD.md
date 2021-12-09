@@ -121,4 +121,4 @@ opencv或onnxruntime使用动态库时，参考下列方法：
 
 build.sh编译参数
 
-1. ```OCR_OUTPUT="BIN"或"JNI"或"CLIB"```： BIN时编译为可执行文件，JNI时默认编译为java jni 动态库，CLIB时便以为 C动态库；
+1. ```OCR_OUTPUT="BIN"或"JNI"或"CLIB"```： BIN时编译为可执行文件，JNI时编译为java jni 动态库，CLIB时编译为 C动态库；
