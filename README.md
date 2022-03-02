@@ -113,3 +113,6 @@ OcrLiteOnnx/models
 * 项目根目录的valgrind-memcheck.sh用来检查内存泄漏(需要debug编译)。
 * valgrind-memcheck.txt是demo在linux平台的检查报告。
 * 报告中的"possibly lost"均发生在第三方库，possibly lost可能不一定是泄露，暂时不管。
+
+### lib调用范例
+* 仅供参考https://github.com/benjaminwan/OcrLiteOnnxLibTest
