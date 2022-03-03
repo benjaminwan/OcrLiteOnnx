@@ -9,7 +9,8 @@
 
 ### Project下载
 
-* 整合好源码和依赖库的完整工程项目，文件比较大，可到Q群共享内下载，以Project开头的压缩包文件为源码工程，例：Project_OcrLiteOnnx-版本号.7z
+* 整合好源码和依赖库的完整工程项目，可以在Release中下载
+* 可到Q群共享内下载，以Project开头的压缩包文件为源码工程，例：Project_OcrLiteOnnx-版本号.7z
 * 如果想自己折腾，则请继续阅读本说明
 
 ### Demo下载(win、mac、linux)
