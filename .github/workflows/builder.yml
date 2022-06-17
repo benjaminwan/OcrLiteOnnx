@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-18.04
 
     env:
-      ONNX_VERSION: 1.9.0
-      ONNX_PKG_NAME: onnxruntime-1.9.0-ubuntu1804-static
-      CV_VERSION: 4.5.4
-      CV_PKG_NAME: opencv-4.5.4-ubuntu1804
+      ONNX_VERSION: 1.11.1
+      ONNX_PKG_NAME: onnxruntime-1.11.1-ubuntu1804-static
+      CV_VERSION: 4.6.0
+      CV_PKG_NAME: opencv-4.6.0-ubuntu1804
 
     steps:
       # 检出代码
@@ -78,10 +78,10 @@ jobs:
     runs-on: macos-latest
 
     env:
-      ONNX_VERSION: 1.9.0
-      ONNX_PKG_NAME: onnxruntime-1.9.0-macos1015-static
-      CV_VERSION: 4.5.4
-      CV_PKG_NAME: opencv-4.5.4-macos1015
+      ONNX_VERSION: 1.11.1
+      ONNX_PKG_NAME: onnxruntime-1.11.1-macos1015-static
+      CV_VERSION: 4.6.0
+      CV_PKG_NAME: opencv-4.6.0-macos1015
 
     steps:
       # 检出代码
@@ -150,10 +150,10 @@ jobs:
     runs-on: windows-2019
 
     env:
-      ONNX_VERSION: 1.9.0
-      ONNX_PKG_NAME: onnxruntime-1.9.0-vs2019-static
-      CV_VERSION: 4.5.4
-      CV_PKG_NAME: opencv-4.5.4-windows-vs2017
+      ONNX_VERSION: 1.11.1
+      ONNX_PKG_NAME: onnxruntime-1.11.1-vs2019-static
+      CV_VERSION: 4.6.0
+      CV_PKG_NAME: opencv-4.6.0-windows-vs2017
 
     steps:
       # 检出代码
