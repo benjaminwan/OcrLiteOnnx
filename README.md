@@ -21,6 +21,7 @@
 * 各平台可执行文件：linux-bin.7z、macos-bin.7z、windows-bin.7z
 * 用于java的jni库：linux-jni.7z、macos-jni.7z、windows-jni.7z
 * 用于C的动态库：linux-clib.7z、macos-clib.7z、windows-clib.7z
+* C动态库调用范例:[OcrLiteOnnxLibTest](https://github.com/benjaminwan/OcrLiteOnnxLibTest)
 * 注意：linux编译平台为ubuntu18.04，如果你的linux版本无法运行demo，请自行从源码编译依赖库和完整项目。
 
 ### 介绍
@@ -48,6 +49,12 @@ ChineseOcr Lite Onnx，超轻量级中文OCR PC Demo，支持onnxruntime推理
 * onnxruntime 1.9.0
 * 优化编译脚本和测试脚本
 
+#### 2022-06-17 update
+
+* opencv 4.6.0
+* onnxruntime 1.11.1
+* 修改c lib导出方法，支持C调用
+
 ### 模型下载
 
 [模型下载地址](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/models)
@@ -72,7 +79,7 @@ OcrLiteOnnx/models
 
 ### FAQ
 
-#### macOS缺少openmp
+#### macOS缺少openmp(从1.7.0开始已不再依赖openmp)
 
 ```brew install libomp```
 
@@ -112,8 +119,24 @@ OcrLiteOnnx/models
 ### 关于内存泄漏与valgrind
 
 * 项目根目录的valgrind-memcheck.sh用来检查内存泄漏(需要debug编译)。
-* valgrind-memcheck.txt是demo在linux平台的检查报告。
-* 报告中的"possibly lost"均发生在第三方库，possibly lost可能不一定是泄露，暂时不管。
+* 常见的并行库有tbb，hpx，openmp，gcd，concurrency，pthread
+* 并行库的种类可以看：https://docs.opencv.org/4.x/db/d05/tutorial_config_reference.html
+* 测试了openmp和pthread，目前已知这类并行库会导致检查报告中出现"possibly lost"
+* opencv只做简单的图像预处理，可以完全不使用任何并行库，但需要定制编译
+* onnxruntime1.6.0或之前，默认引用openmp，从1.7.0开始默认关闭openmp并使用自带的ThreadPool代码
+* 阅读报告可以看出"possibly lost"发生位置均在引用的第三方库(如果使用了并行库的话)，如opencv或onnxruntime
+* "possibly lost"不一定是内存泄露
+* 以下3个检查报告，onnxruntime均使用v1.11.0且不引用openmp
+* valgrind-memcheck-nothread.txt是opencv不使用任何并行库的检查报告。
+* valgrind-memcheck-openmp.txt是opencv使用openmp的检查报告。
+* valgrind-memcheck-pthread.txt是opencv使用pthread的检查报告。
+* 如果opencv想定制编译不使用任何并行库，可以使用以下参数进行编译
 
-### lib调用范例
-* 仅供参考https://github.com/benjaminwan/OcrLiteOnnxLibTest
+```
+-DWITH_TBB=OFF
+-DWITH_HPX=OFF
+-DWITH_OPENMP=OFF
+-DWITH_GCD=OFF
+-DWITH_CONCURRENCY=OFF
+-DWITH_PTHREADS_PF=OFF
+```

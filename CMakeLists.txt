@@ -7,6 +7,7 @@ elseif (UNIX)
 endif ()
 project(OcrLiteOnnx)
 
+# Output BIN JNI CLIB
 if (NOT DEFINED OCR_OUTPUT)
     set(OCR_OUTPUT "BIN")
     message(STATUS "No OCR_OUTPUT, defaulting to BIN")

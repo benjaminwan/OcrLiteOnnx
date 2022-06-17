@@ -18,9 +18,12 @@ echo "找不到待识别的目标图片：${TARGET_IMG}，请打开本文件并�
 exit
 fi
 
+sysOS=`uname -s`
+EXE_PATH=${sysOS}-BIN
+
 ##### run test on MacOS or Linux
 valgrind --tool=memcheck --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no --log-file=valgrind-memcheck.txt \
-./build/OcrLiteOnnx --models models \
+./${EXE_PATH}/OcrLiteOnnx --models models \
 --det dbnet.onnx \
 --cls angle_net.onnx \
 --rec crnn_lite_lstm.onnx \

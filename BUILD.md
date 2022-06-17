@@ -6,8 +6,8 @@
 
 * OpenCV静态库：opencv-(版本号)-平台.7z，
 * 把压缩包解压到项目根目录，windows平台需要注意目录层次，解压后目录结构如下
-* windows平台请选择vs2017版本(也可以用于vs2019编译)
-* 程序版本v1.6.0需要opencv 4.5.4
+* 程序版本v1.6.0依赖opencv 4.5.4
+* 程序版本v1.7.0依赖opencv 4.6.0
 ```
 OcrLiteNcnn/opencv-static
 ├── OpenCVWrapperConfig.cmake
@@ -22,7 +22,8 @@ OcrLiteNcnn/opencv-static
 * static为静态库：onnxruntime-(版本号)-平台-static.7z
 * shared为动态库：onnxruntime-(版本号)-平台-shared.7z
 * 一般情况下使用静态库即可
-* 程序版本v1.6.0需要onnxruntime 1.9.0
+* 程序版本v1.6.0依赖onnxruntime 1.9.0
+* 程序版本v1.7.0依赖onnxruntime 1.11.1
 * 把压缩包解压到项目根目录，windows平台需要注意目录层次，解压后目录结构如下
 
 ```

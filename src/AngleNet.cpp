@@ -118,7 +118,7 @@ std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const cha
         } else {//all angle set to 1
             mostAngleIndex = 1;
         }
-        printf("Set All Angle to mostAngleIndex(%d)\n", mostAngleIndex);
+        //printf("Set All Angle to mostAngleIndex(%d)\n", mostAngleIndex);
         for (int i = 0; i < angles.size(); ++i) {
             Angle angle = angles[i];
             angle.index = mostAngleIndex;

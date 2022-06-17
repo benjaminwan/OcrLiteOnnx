@@ -56,8 +56,7 @@ void CrnnNet::initModel(const std::string &pathStr, const std::string &keysPath)
     if (keys.size() != 5531) {
         fprintf(stderr, "missing keys\n");
     }
-    printf("total keys size(%lu)\n", keys.size());
-
+    //printf("total keys size(%lu)\n", keys.size());
 }
 
 template<class ForwardIterator>
