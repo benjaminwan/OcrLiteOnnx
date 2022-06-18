@@ -49,7 +49,7 @@ ChineseOcr Lite Onnx，超轻量级中文OCR PC Demo，支持onnxruntime推理
 * fix:win编译打包C动态库缺少lib文件
 * 编译c动态库添加打包include
 
-#### 2022-06-17 update
+#### 2022-06-18 update
 
 * opencv 4.6.0
 * onnxruntime 1.11.1
