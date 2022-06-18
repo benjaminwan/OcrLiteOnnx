@@ -15,7 +15,7 @@ extern "C"
 #endif
 
 typedef void *OCR_HANDLE;
-typedef char BOOL;
+typedef char OCR_BOOL;
 
 #ifndef NULL
 #define NULL 0
@@ -39,12 +39,12 @@ By default, nThreads should be the number of threads
 _QM_OCR_API OCR_HANDLE
 OcrInit(const char *szDetModel, const char *szClsModel, const char *szRecModel, const char *szKeyPath, int nThreads);
 
-_QM_OCR_API BOOL
+_QM_OCR_API OCR_BOOL
 OcrDetect(OCR_HANDLE handle, const char *imgPath, const char *imgName, OCR_PARAM *pParam);
 
 _QM_OCR_API int OcrGetLen(OCR_HANDLE handle);
 
-_QM_OCR_API BOOL OcrGetResult(OCR_HANDLE handle, char *szBuf, int nLen);
+_QM_OCR_API OCR_BOOL OcrGetResult(OCR_HANDLE handle, char *szBuf, int nLen);
 
 _QM_OCR_API void OcrDestroy(OCR_HANDLE handle);
 

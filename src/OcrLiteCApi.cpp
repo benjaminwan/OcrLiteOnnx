@@ -26,7 +26,7 @@ OcrInit(const char *szDetModel, const char *szClsModel, const char *szRecModel, 
 
 }
 
-_QM_OCR_API BOOL
+_QM_OCR_API OCR_BOOL
 OcrDetect(OCR_HANDLE handle, const char *imgPath, const char *imgName, OCR_PARAM *pParam) {
 
     OCR_OBJ *pOcrObj = (OCR_OBJ *) handle;
@@ -73,7 +73,7 @@ _QM_OCR_API int OcrGetLen(OCR_HANDLE handle) {
     return pOcrObj->strRes.size() + 1;
 }
 
-_QM_OCR_API BOOL OcrGetResult(OCR_HANDLE handle, char *szBuf, int nLen) {
+_QM_OCR_API OCR_BOOL OcrGetResult(OCR_HANDLE handle, char *szBuf, int nLen) {
     OCR_OBJ *pOcrObj = (OCR_OBJ *) handle;
     if (!pOcrObj)
         return FALSE;
