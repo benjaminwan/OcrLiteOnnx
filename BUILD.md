@@ -9,7 +9,7 @@
 * 程序版本v1.6.0依赖opencv 4.5.4
 * 程序版本v1.7.0依赖opencv 4.6.0
 * windows平台分为mt和md版，mt代表静态链接CRT，md代表动态链接CRT
-* 20221014之后，范例工程默认使用mt版，之前的版本则为md版
+* v1.8.0范例工程默认使用mt版，之前的版本则为md版
 ```
 OcrLiteNcnn/opencv-static
 ├── OpenCVWrapperConfig.cmake
@@ -28,7 +28,7 @@ OcrLiteNcnn/opencv-static
 * 程序版本v1.7.0依赖onnxruntime 1.11.1
 * 把压缩包解压到项目根目录，windows平台需要注意目录层次，解压后目录结构如下
 * windows平台分为mt和md版，mt代表静态链接CRT，md代表动态链接CRT
-* 20221014之后，范例工程默认使用mt版，之前的版本则为md版
+* v1.8.0范例工程默认使用mt版，之前的版本则为md版
 ```
 OcrLiteNcnn/onnxruntime-static
 ├── OnnxRuntimeWrapper.cmake
