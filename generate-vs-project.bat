@@ -24,6 +24,15 @@ else if %flag% == 3 (set BUILD_OUTPUT="CLIB")^
 else (echo 输入错误！Input Error!)
 echo.
 
+echo "引用的库类型: 1)静态CRT(mt), 2)动态CRT(md)"
+echo "注意：范例工程默认集成mt版库"
+set /p flag=
+if %flag% == 1 (
+    set MT_ENABLED="True"
+)^
+else (set MT_ENABLED="False")
+echo.
+
 echo "请输入选项并回车: 0)ALL, 1)vs2019-x86, 2)vs2019-x64:"
 set /p flag=
 if %flag% == 0 (call :buildALL)^
@@ -52,8 +61,8 @@ popd
 GOTO:EOF
 
 :cmakeParams
-echo cmake -G "%~1" -A "%~2" -DOCR_OUTPUT=%BUILD_OUTPUT% ..
-cmake -G "%~1" -A "%~2" -DOCR_OUTPUT=%BUILD_OUTPUT% ..
+echo cmake -G "%~1" -A "%~2" -DOCR_OUTPUT=%BUILD_OUTPUT% -DOCR_BUILD_CRT=%MT_ENABLED% ..
+cmake -G "%~1" -A "%~2" -DOCR_OUTPUT=%BUILD_OUTPUT% -DOCR_BUILD_CRT=%MT_ENABLED% ..
 GOTO:EOF
 
 @ENDLOCAL

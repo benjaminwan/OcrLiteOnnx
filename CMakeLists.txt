@@ -103,3 +103,8 @@ if (OCR_BENCHMARK AND (OCR_OUTPUT STREQUAL "BIN"))
             LIBRARY DESTINATION sharedlib
             RUNTIME DESTINATION bin)
 endif ()
+
+# Windows Link CRT
+if (OCR_BUILD_CRT STREQUAL "True")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/OcrCRTLinkage.cmake)
+endif ()
