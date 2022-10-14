@@ -56,6 +56,11 @@ ChineseOcr Lite Onnx，超轻量级中文OCR PC Demo，支持onnxruntime推理
 * onnxruntime 1.11.1
 * 修改c lib导出方法，支持C调用
 
+#### 2022-10-14 update
+
+* onnxruntime 1.12.1
+* 支持mt版引用库
+
 ### 模型下载
 
 [模型下载地址](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/models)
@@ -79,6 +84,11 @@ OcrLiteOnnx/models
 4. 终端运行run-benchmark.sh或命令行运行run-benchmark.bat，查看识别过程平均耗时.
 
 ### FAQ
+
+#### windows静态链接msvc
+
+- 作用:静态链接CRT(mt)可以让编译出来的包，部署时不需要安装c++运行时，但会增大包体积；
+- 需要mt版的引用库，参考编译说明，下载mt版的库；
 
 #### macOS缺少openmp(从1.7.0开始已不再依赖openmp)
 
