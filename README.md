@@ -64,7 +64,7 @@ ChineseOcr Lite Onnx，超轻量级中文OCR PC Demo，支持onnxruntime推理
 
 #### 2023-02-13 update
 
-* onnxruntime 1.14
+* onnxruntime 1.14.0
 
 ### 模型下载
 
