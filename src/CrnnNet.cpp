@@ -64,20 +64,20 @@ inline static size_t argmax(ForwardIterator first, ForwardIterator last) {
     return std::distance(first, std::max_element(first, last));
 }
 
-TextLine CrnnNet::scoreToTextLine(const std::vector<float> &outputData, int h, int w) {
-    int keySize = keys.size();
+TextLine CrnnNet::scoreToTextLine(const std::vector<float> &outputData, size_t h, size_t w) {
+    auto keySize = keys.size();
     std::string strRes;
     std::vector<float> scores;
-    int lastIndex = 0;
-    int maxIndex;
+    size_t lastIndex = 0;
+    size_t maxIndex;
     float maxValue;
 
-    for (int i = 0; i < h; i++) {
+    for (size_t i = 0; i < h; i++) {
         maxIndex = 0;
         maxValue = -1000.f;
         //do softmax
         std::vector<float> exps(w);
-        for (int j = 0; j < w; j++) {
+        for (size_t j = 0; j < w; j++) {
             float expSingle = exp(outputData[i * w + j]);
             exps.at(j) = expSingle;
         }

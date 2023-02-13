@@ -85,10 +85,10 @@ Angle AngleNet::getAngle(cv::Mat &src) {
 
 std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const char *path,
                                        const char *imgName, bool doAngle, bool mostAngle) {
-    int size = partImgs.size();
+    size_t size = partImgs.size();
     std::vector<Angle> angles(size);
     if (doAngle) {
-        for (int i = 0; i < size; ++i) {
+        for (size_t i = 0; i < size; ++i) {
             double startAngle = getCurrentTime();
             auto angleImg = adjustTargetImg(partImgs[i], dstWidth, dstHeight);
             Angle angle = getAngle(angleImg);
@@ -104,7 +104,7 @@ std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const cha
             }
         }
     } else {
-        for (int i = 0; i < size; ++i) {
+        for (size_t i = 0; i < size; ++i) {
             angles[i] = Angle{-1, 0.f};
         }
     }
@@ -120,7 +120,7 @@ std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const cha
             mostAngleIndex = 1;
         }
         //printf("Set All Angle to mostAngleIndex(%d)\n", mostAngleIndex);
-        for (int i = 0; i < angles.size(); ++i) {
+        for (size_t i = 0; i < angles.size(); ++i) {
             Angle angle = angles[i];
             angle.index = mostAngleIndex;
             angles.at(i) = angle;

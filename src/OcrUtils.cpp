@@ -93,7 +93,7 @@ void drawTextBox(cv::Mat &boxImg, const std::vector<cv::Point> &box, int thickne
 }
 
 void drawTextBoxes(cv::Mat &boxImg, std::vector<TextBox> &textBoxes, int thickness) {
-    for (int i = 0; i < textBoxes.size(); ++i) {
+    for (size_t i = 0; i < textBoxes.size(); ++i) {
         drawTextBox(boxImg, textBoxes[i].boxPoint, thickness);
     }
 }
@@ -125,7 +125,7 @@ cv::Mat getRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box) {
     cv::Mat imgCrop;
     image(cv::Rect(left, top, right - left, bottom - top)).copyTo(imgCrop);
 
-    for (int i = 0; i < points.size(); i++) {
+    for (size_t i = 0; i < points.size(); i++) {
         points[i].x -= left;
         points[i].y -= top;
     }
@@ -235,7 +235,7 @@ float boxScoreFast(const cv::Mat &inMat, const std::vector<cv::Point> &inBox) {
     int width = inMat.cols;
     int height = inMat.rows;
     int maxX = -1, minX = 1000000, maxY = -1, minY = 1000000;
-    for (int i = 0; i < box.size(); ++i) {
+    for (size_t i = 0; i < box.size(); ++i) {
         if (maxX < box[i].x)
             maxX = box[i].x;
         if (minX > box[i].x)
@@ -278,7 +278,7 @@ std::vector<cv::Point> unClip(const std::vector<cv::Point> &inBox, float perimet
     std::vector<cv::Point> outBox;
     ClipperLib::Path poly;
 
-    for (int i = 0; i < inBox.size(); ++i) {
+    for (size_t i = 0; i < inBox.size(); ++i) {
         poly.push_back(ClipperLib::IntPoint(inBox[i].x, inBox[i].y));
     }
 
@@ -292,9 +292,9 @@ std::vector<cv::Point> unClip(const std::vector<cv::Point> &inBox, float perimet
 
     outBox.clear();
     std::vector<cv::Point> rsVec;
-    for (int i = 0; i < polys.size(); ++i) {
+    for (size_t i = 0; i < polys.size(); ++i) {
         ClipperLib::Path tmpPoly = polys[i];
-        for (int j = 0; j < tmpPoly.size(); ++j) {
+        for (size_t j = 0; j < tmpPoly.size(); ++j) {
             outBox.emplace_back(tmpPoly[j].X, tmpPoly[j].Y);
         }
     }
@@ -319,7 +319,7 @@ std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, c
 std::vector<int> getAngleIndexes(std::vector<Angle> &angles) {
     std::vector<int> angleIndexes;
     angleIndexes.reserve(angles.size());
-    for (int i = 0; i < angles.size(); ++i) {
+    for (size_t i = 0; i < angles.size(); ++i) {
         angleIndexes.push_back(angles[i].index);
     }
     return angleIndexes;
@@ -408,7 +408,7 @@ std::string getResultImgFilePath(const char *path, const char *imgName) {
     return filePath;
 }
 
-std::string getDebugImgFilePath(const char *path, const char *imgName, int i, const char *tag) {
+std::string getDebugImgFilePath(const char *path, const char *imgName, size_t i, const char *tag) {
     std::string filePath;
     filePath.append(path).append(imgName).append(tag).append(std::to_string(i)).append(".jpg");
     return filePath;

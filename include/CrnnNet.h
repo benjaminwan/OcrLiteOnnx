@@ -34,7 +34,7 @@ private:
 
     std::vector<std::string> keys;
 
-    TextLine scoreToTextLine(const std::vector<float> &outputData, int h, int w);
+    TextLine scoreToTextLine(const std::vector<float> &outputData, size_t h, size_t w);
 
     TextLine getTextLine(const cv::Mat &src);
 };
