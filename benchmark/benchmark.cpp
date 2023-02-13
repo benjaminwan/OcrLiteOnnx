@@ -4,6 +4,10 @@
 #include "OcrLite.h"
 #include "OcrUtils.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 void printHelp(FILE *out, char *argv0) {
     fprintf(out, " ------- Usage -------\n");
     fprintf(out, "%s %s", argv0, usageMsg);
@@ -23,6 +27,9 @@ int main(int argc, char **argv) {
         printHelp(stderr, argv[0]);
         return -1;
     }
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+#endif
     std::string modelsDir, modelDetPath, modelClsPath, modelRecPath, keysPath;
     std::string imgPath, imgDir, imgName;
     int numThread = 4;
