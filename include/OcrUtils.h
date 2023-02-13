@@ -36,7 +36,7 @@ inline bool isFileExists(const std::string &name) {
     return (stat(name.c_str(), &buffer) == 0);
 }
 
-#ifdef _WIN32
+/*#ifdef _WIN32
 #define my_strtol wcstol
 #define my_strrchr wcsrchr
 #define my_strcasecmp _wcsicmp
@@ -46,7 +46,7 @@ inline bool isFileExists(const std::string &name) {
 #define my_strrchr strrchr
 #define my_strcasecmp strcasecmp
 #define my_strdup strdup
-#endif
+#endif*/
 
 std::wstring strToWstr(std::string str);
 
@@ -82,13 +82,9 @@ std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, c
 
 std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
 
-std::vector<char *> getInputNames(Ort::Session *session);
+std::vector<Ort::AllocatedStringPtr> getInputNames(Ort::Session *session);
 
-std::vector<char *> getOutputNames(Ort::Session *session);
-
-void getInputName(Ort::Session *session, char *&inputName);
-
-void getOutputName(Ort::Session *session, char *&outputName);
+std::vector<Ort::AllocatedStringPtr> getOutputNames(Ort::Session *session);
 
 void saveImg(cv::Mat &img, const char *imgPath);
 

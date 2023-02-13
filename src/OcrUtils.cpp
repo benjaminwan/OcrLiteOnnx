@@ -325,88 +325,65 @@ std::vector<int> getAngleIndexes(std::vector<Angle> &angles) {
     return angleIndexes;
 }
 
-std::vector<char *> getInputNames(Ort::Session *session) {
+std::vector<Ort::AllocatedStringPtr> getInputNames(Ort::Session *session) {
     Ort::AllocatorWithDefaultOptions allocator;
-    size_t numInputNodes = session->GetInputCount();
-    std::vector<char *> inputNodeNames(numInputNodes);
-    std::vector<int64_t> inputNodeDims;
+    const size_t numInputNodes = session->GetInputCount();
 
-    //printf("Number of inputs = %zu\n", numInputNodes);
+    std::vector<Ort::AllocatedStringPtr> inputNamesPtr;
+    inputNamesPtr.reserve(numInputNodes);
+    std::vector<int64_t> input_node_dims;
 
-    for (int i = 0; i < numInputNodes; i++) {
-        // print input node names
-        char *inputName = session->GetInputName(i, allocator);
-        printf("InputName[%d]=%s\n", i, inputName);
-        inputNodeNames[i] = inputName;
+    // iterate over all input nodes
+    for (size_t i = 0; i < numInputNodes; i++) {
+        auto inputName = session->GetInputNameAllocated(i, allocator);
+        inputNamesPtr.push_back(std::move(inputName));
+        /*printf("inputName[%zu] = %s\n", i, inputName.get());
 
         // print input node types
-        //Ort::TypeInfo typeInfo = session->GetInputTypeInfo(i);
-        //auto tensorInfo = typeInfo.GetTensorTypeAndShapeInfo();
+        auto typeInfo = session->GetInputTypeInfo(i);
+        auto tensorInfo = typeInfo.GetTensorTypeAndShapeInfo();
 
-        //ONNXTensorElementDataType type = tensorInfo.GetElementType();
-        //printf("Input[%d] type=%d\n", i, type);
+        ONNXTensorElementDataType type = tensorInfo.GetElementType();
+        printf("inputType[%zu] = %u\n", i, type);
 
         // print input shapes/dims
-        //inputNodeDims = tensorInfo.GetShape();
-        //printf("Input[%d] num_dims=%zu\n", i, inputNodeDims.size());
-        /*for (int j = 0; j < inputNodeDims.size(); j++)
-            printf("Input[%d] dim%d=%jd\n", i, j, inputNodeDims[j]);*/
+        input_node_dims = tensorInfo.GetShape();
+        printf("Input num_dims = %zu\n", input_node_dims.size());
+        for (size_t j = 0; j < input_node_dims.size(); j++) {
+            printf("Input dim[%zu] = %llu\n",j, input_node_dims[j]);
+        }*/
     }
-    return inputNodeNames;
+    return inputNamesPtr;
 }
 
-std::vector<char *> getOutputNames(Ort::Session *session) {
+std::vector<Ort::AllocatedStringPtr> getOutputNames(Ort::Session *session) {
     Ort::AllocatorWithDefaultOptions allocator;
-    size_t numOutputNodes = session->GetOutputCount();
-    std::vector<char *> outputNodeNames(numOutputNodes);
-    //std::vector<int64_t> outputNodeDims;
+    const size_t numOutputNodes = session->GetOutputCount();
 
-    //printf("Number of outputs = %zu\n", numOutputNodes);
+    std::vector<Ort::AllocatedStringPtr> outputNamesPtr;
+    outputNamesPtr.reserve(numOutputNodes);
+    std::vector<int64_t> output_node_dims;
 
-    for (int i = 0; i < numOutputNodes; i++) {
-        // print input node names
-        char *outputName = session->GetOutputName(i, allocator);
-        printf("OutputName[%d]=%s\n", i, outputName);
-        outputNodeNames[i] = outputName;
+    for (size_t i = 0; i < numOutputNodes; i++) {
+        auto outputName = session->GetOutputNameAllocated(i, allocator);
+        outputNamesPtr.push_back(std::move(outputName));
+        /*printf("outputName[%zu] = %s\n", i, outputName.get());
 
         // print input node types
-        //Ort::TypeInfo type_info = session->GetOutputTypeInfo(i);
-        //auto tensorInfo = type_info.GetTensorTypeAndShapeInfo();
+        auto type_info = session->GetOutputTypeInfo(i);
+        auto tensor_info = type_info.GetTensorTypeAndShapeInfo();
 
-        //ONNXTensorElementDataType type = tensorInfo.GetElementType();
-        //printf("Output %d : type=%d\n", i, type);
+        ONNXTensorElementDataType type = tensor_info.GetElementType();
+        printf("outputType[%zu] = %u\n", i, type);
 
         // print input shapes/dims
-        //outputNodeDims = tensorInfo.GetShape();
-        //printf("Output %d : num_dims=%zu\n", i, outputNodeDims.size());
-        /*for (int j = 0; j < outputNodeDims.size(); j++)
-            printf("Output %d : dim %d=%jd\n", i, j, outputNodeDims[j]);*/
+        output_node_dims = tensor_info.GetShape();
+        printf("output num_dims = %zu\n", output_node_dims.size());
+        for (size_t j = 0; j < output_node_dims.size(); j++) {
+            printf("output dim[%zu] = %llu\n",j, output_node_dims[j]);
+        }*/
     }
-    return outputNodeNames;
-}
-
-void getInputName(Ort::Session *session, char *&inputName) {
-    size_t numInputNodes = session->GetInputCount();
-    if (numInputNodes > 0) {
-        Ort::AllocatorWithDefaultOptions allocator;
-        {
-            char *t = session->GetInputName(0, allocator);
-            inputName = my_strdup(t);
-            allocator.Free(t);
-        }
-    }
-}
-
-void getOutputName(Ort::Session *session, char *&outputName) {
-    size_t numOutputNodes = session->GetInputCount();
-    if (numOutputNodes > 0) {
-        Ort::AllocatorWithDefaultOptions allocator;
-        {
-            char *t = session->GetOutputName(0, allocator);
-            outputName = my_strdup(t);
-            allocator.Free(t);
-        }
-    }
+    return outputNamesPtr;
 }
 
 void saveImg(cv::Mat &img, const char *imgPath) {

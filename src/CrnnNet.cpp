@@ -7,8 +7,8 @@ CrnnNet::CrnnNet() {}
 
 CrnnNet::~CrnnNet() {
     delete session;
-    free(inputName);
-    free(outputName);
+    inputNamesPtr.clear();
+    outputNamesPtr.clear();
 }
 
 void CrnnNet::setNumThread(int numOfThread) {
@@ -39,8 +39,8 @@ void CrnnNet::initModel(const std::string &pathStr, const std::string &keysPath)
 #else
     session = new Ort::Session(env, pathStr.c_str(), sessionOptions);
 #endif
-    getInputName(session, inputName);
-    getOutputName(session, outputName);
+    inputNamesPtr = getInputNames(session);
+    outputNamesPtr = getOutputNames(session);
 
     //load keys
     std::ifstream in(keysPath.c_str());
@@ -110,9 +110,10 @@ TextLine CrnnNet::getTextLine(const cv::Mat &src) {
                                                              inputTensorValues.size(), inputShape.data(),
                                                              inputShape.size());
     assert(inputTensor.IsTensor());
-
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, &inputName, &inputTensor, 1, &outputName, 1);
-
+    std::vector<const char *> inputNames = {inputNamesPtr.data()->get()};
+    std::vector<const char *> outputNames = {outputNamesPtr.data()->get()};
+    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
+                                     inputNames.size(), outputNames.data(), outputNames.size());
     assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
 
     std::vector<int64_t> outputShape = outputTensor[0].GetTensorTypeAndShapeInfo().GetShape();
