@@ -6,7 +6,8 @@
 * QQ②群：820132154(满)
 * QQ③群：904091319(满)
 * QQ④群：615877948(满)
-* QQ⑤群：185905924
+* QQ⑤群：185905924(满)
+* QQ⑥群：628010752
 
 ### Project下载
 
@@ -60,6 +61,10 @@ ChineseOcr Lite Onnx，超轻量级中文OCR PC Demo，支持onnxruntime推理
 
 * onnxruntime 1.12.1
 * 支持mt版引用库
+
+#### 2023-02-13 update
+
+* onnxruntime 1.14
 
 ### 模型下载
 
